@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Loja Virtual{% endblock %}</title>
+    </head>
+    <body>
+        <header>
+            <h1>Plataforma Compras</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'admin:index' %}">Página Administrador</a></li>
+                    <li><a href="{% url 'home' %}">Início</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+        <footer>
+            <p>&copy; 2025 Aplicação Loja Virtual</p>
+        </footer>
+    </body>
+</html>
