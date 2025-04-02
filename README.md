@@ -1,5 +1,10 @@
 # Como Executar
 
+## Popular o banco de dados
+Execute o comando:
+
+python populate.py
+
 # Objetivo da Aplicação
 
 A aplicação simula um site com informações cadastrais de cliente. Para isso, há 3 tabelas relacionais.
