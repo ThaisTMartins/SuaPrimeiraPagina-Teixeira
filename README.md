@@ -1,9 +1,7 @@
 # Como Executar
 
 ## Popular o banco de dados
-Execute o comando:
-
-python populate.py
+Execute o comando: 'python populate.py'
 
 # Objetivo da Aplicação
 
