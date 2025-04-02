@@ -1,19 +1,15 @@
 # SuaPrimeiraPagina-Teixeira
 
 A aplicação simula um site com informações cadastrais de cliente. Para isso, há 3 tabelas relacionais:
-
 <div style="display: flex; gap: 20px;">
 
-<!-- Tabela Usuario -->
-<table>
-  <thead>
+  <!-- Tabela Usuario -->
+  <table border="1" style="border-collapse: collapse; text-align: center;">
     <tr>
       <th>Usuario</th>
     </tr>
-  </thead>
-  <tbody>
     <tr>
-      <td><b style="color:blue;">id</b></td>
+      <td><span style="color:blue; font-weight:bold;">id</span></td>
     </tr>
     <tr>
       <td>nome</td>
@@ -21,19 +17,15 @@ A aplicação simula um site com informações cadastrais de cliente. Para isso,
     <tr>
       <td>senha</td>
     </tr>
-  </tbody>
-</table>
+  </table>
 
-<!-- Tabela Cliente -->
-<table>
-  <thead>
+  <!-- Tabela Cliente -->
+  <table border="1" style="border-collapse: collapse; text-align: center;">
     <tr>
       <th>Cliente</th>
     </tr>
-  </thead>
-  <tbody>
     <tr>
-      <td><b style="color:red;">id_usuario</b></td>
+      <td><span style="color:red; font-weight:bold;">id_usuario</span></td>
     </tr>
     <tr>
       <td>cpf</td>
@@ -47,19 +39,15 @@ A aplicação simula um site com informações cadastrais de cliente. Para isso,
     <tr>
       <td>ano_nascimento</td>
     </tr>
-  </tbody>
-</table>
+  </table>
 
-<!-- Tabela Interesses -->
-<table>
-  <thead>
+  <!-- Tabela Interesses -->
+  <table border="1" style="border-collapse: collapse; text-align: center;">
     <tr>
       <th>Interesses</th>
     </tr>
-  </thead>
-  <tbody>
     <tr>
-      <td><b style="color:red;">id_cliente</b></td>
+      <td><span style="color:red; font-weight:bold;">id_cliente</span></td>
     </tr>
     <tr>
       <td>outro_campo1</td>
@@ -67,8 +55,6 @@ A aplicação simula um site com informações cadastrais de cliente. Para isso,
     <tr>
       <td>outro_campo2</td>
     </tr>
-  </tbody>
-</table>
+  </table>
 
 </div>
-
