@@ -1,7 +1,21 @@
 # Como Executar
 
+## Ativar o ambiente virtual
+`.\SuaPrimeiraPagina+Teixeira\Scripts\activate`
+
+## Criar o banco de dados
+`python manage.py makemigrations`
+`python manage.py migrate`
+
+## Criar o usuário admin
+`python manage.py createsuperuser`
+Adicione o nome de usuário e senha que serão utilizados para acessar a área de administrador do sistema.
+
 ## Popular o banco de dados
-Execute o comando: `python populate.py`
+`python populate.py`
+
+## Executar o servidor
+`python manage.py runserver`
 
 # Objetivo da Aplicação
 
