@@ -1,15 +1,23 @@
- {% extends "base.html" %}
+{% extends "base.html" %}
 
- {% block title %}Lista de Usuários{% endblock %}
+{% block title %}Lista Usuários{% endblock %}
 
- {% block content %}
- <!DOCTYPE html>
- <html>
-    <head>
-        <title>Usuários</title>
-    </head>
-    <body>
-        <h1>{{ usuario.usuario }}</h1>
-    </body>
- </html>
- {% endblock %}
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Lista Usuários</h1>
+        
+        {% if usuarios %}
+            <ul class="list-group">
+                {% for usuario in usuarios %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{% url 'detalhe_usuarios' %}" class="text-decoration-none">
+                            {{ usuario.nome }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="alert alert-warning">Nenhum usuário encontrado.</p>
+        {% endif %}
+    </div>
+{% endblock %}

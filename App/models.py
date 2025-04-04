@@ -6,22 +6,26 @@ class Usuario(models.Model):
     senha = models.CharField(max_length=8)
 
 class Cliente(models.Model):
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     nome = models.CharField(max_length=100)
     senha = models.CharField(max_length=8)
     email = models.EmailField(max_length=50)
     ano_nascimento = models.IntegerField()
     telefone = models.IntegerField()
     cpf = models.IntegerField()
-    interesses = models.CharField(max_length=200)
 
 class Produto(models.Model):
     produto = models.CharField(max_length=1000)
 
-# Usada para trazer informações adicionais no banco de dados
-class Post(models.Model):
-    titulo = models.CharField(max_length=200)
-    conteudo = models.TextField()
-    data_publicacao = models.DateTimeField(auto_now_add = True)
+class Interesse(models.Model):
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    interesse = models.CharField(max_length=100)
 
-    def __str__(self):
-        return self.titulo
+# Usada para trazer informações adicionais no banco de dados
+# class Post(models.Model):
+#     titulo = models.CharField(max_length=200)
+#     conteudo = models.TextField()
+#     data_publicacao = models.DateTimeField(auto_now_add = True)
+
+#     def __str__(self):
+#         return self.titulo

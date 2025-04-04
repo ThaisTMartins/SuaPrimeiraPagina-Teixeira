@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'App', # para vincular o App ao projeto SuaPrimeiraPagina
+    'widget_tweaks', # para usar o widget tweaks no forms
 ]
 
 MIDDLEWARE = [
