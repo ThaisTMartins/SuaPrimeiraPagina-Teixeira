@@ -23,9 +23,9 @@ def popular_banco():
     produto2 = Produto.objects.create(produto="Smartphone")
 
     # Criação de interesses (dois interesses para cliente1)
-    Interesse.objects.create(cliente=cliente1, interesse="Tecnologia")
-    Interesse.objects.create(cliente=cliente1, interesse="Jogos")
-    Interesse.objects.create(cliente=cliente2, interesse="Culinária")
+    Interesse.objects.create(cliente=cliente1, interesse="TV")
+    Interesse.objects.create(cliente=cliente1, interesse="Case")
+    Interesse.objects.create(cliente=cliente2, interesse="Headset")
 
     print("Dados populados com sucesso!")
 
