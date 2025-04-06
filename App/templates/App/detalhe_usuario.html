@@ -3,37 +3,44 @@
 {% block title %}Detalhes do Usuário{% endblock %}
 
 {% block content %}
-    <div class="container mt-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h2 class="card title">{{ usuario.nome }}</h2>
-        
-                {% if cliente.usuario %}
-                    <hr>
-                        <h3>Dados do Cliente</h3>
-                        <p class="card-text"><strong>Email:</strong>{{ cliente.email }}</p>
-                        <p class="card-text"><strong>Telefone:</strong>{{ cliente.telefone }}</p>
-                        <p class="card-text"><strong>CPF:</strong>{{ cliente.cpf }}</p>
-                        <p class="card-text"><strong>Ano Nascimento:</strong>{{ cliente.ano_nascimento }}</p>
-                        {% if cliente.interesses.all %}
-                            <p class="card-text"><strong>Interesses:</strong>
-                                <ul>
-                                    {% for interesse in cliente.interesses.all %}
-                                        <li>{{ interesse.interesse }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </p>
-                        {% else %}
-                            <p class="alert alert-info">Nenhum interesse cadastrado para este cliente.</p>
-                        {% endif %}
-                        <a href="{% url 'criar_interesse' usuario_id=usuario.pk cliente_id=cliente.pk %}" class="btn btn-success mb-3">Cadastrar Interesse</a>
-                {% else %}
-                    <p class="alert alert-warning">Este usuário não possui um cliente associado!</p>
-                    <a href="{% url 'criar_cliente' usuario_id=usuario.pk %}" class="btn btn-success mb-3">Inserir Dados</a>
-                {% endif %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-body">
+            <h2 class="card-title">{{ usuario.nome }}</h2>
 
-                <a href="{% url 'lista_usuarios' %}" class="btn btn-primary mb-3">Voltar</a>
+            {% if cliente.usuario %}
+                <hr>
+                <h3>Dados do Cliente</h3>
+                <p class="card-text"><strong>Email:</strong> {{ cliente.email }}</p>
+                <p class="card-text"><strong>Telefone:</strong> {{ cliente.telefone }}</p>
+                <p class="card-text"><strong>CPF:</strong> {{ cliente.cpf }}</p>
+                <p class="card-text"><strong>Ano Nascimento:</strong> {{ cliente.ano_nascimento }}</p>
+
+                {% if cliente.interesses.all %}
+                    <p class="card-text"><strong>Interesses:</strong></p>
+                    <ul class="list-group mb-3">
+                        {% for interesse in cliente.interesses.all %}
+                            <li class="list-group-item">{{ interesse.interesse }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="alert alert-info">Nenhum interesse cadastrado para este cliente.</p>
+                {% endif %}
+            {% else %}
+                <p class="alert alert-warning">Este usuário não possui um cliente associado!</p>
+            {% endif %}
+
+            <!-- Botões alinhados -->
+            <div class="d-flex gap-2 mt-3">
+                {% if cliente.usuario %}
+                    <a href="{% url 'criar_interesse' usuario_id=usuario.pk cliente_id=cliente.pk %}" class="btn btn-success">Cadastrar Interesse</a>
+                {% else %}
+                    <a href="{% url 'criar_cliente' usuario_id=usuario.pk %}" class="btn btn-success">Inserir Dados</a>
+                {% endif %}
+                
+                <a href="{% url 'lista_usuarios' %}" class="btn btn-primary">Voltar</a>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
