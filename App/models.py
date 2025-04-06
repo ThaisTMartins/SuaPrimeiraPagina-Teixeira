@@ -7,8 +7,6 @@ class Usuario(models.Model):
 
 class Cliente(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
-    nome = models.CharField(max_length=100)
-    senha = models.CharField(max_length=8)
     email = models.EmailField(max_length=50)
     ano_nascimento = models.IntegerField()
     telefone = models.IntegerField()
