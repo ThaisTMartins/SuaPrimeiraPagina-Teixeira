@@ -19,8 +19,8 @@ def lista_produtos_disponiveis(request):
     produtos_disponiveis = Produto.objects.all()
     return render (request, 'App/lista_produtos_disponiveis.html', {'produtos': produtos_disponiveis})
 
-def criar_clientes(request, pk):
-    usuario = get_object_or_404(Usuario, pk=pk)  # Garante que o usuário existe
+def criar_clientes(request, usuario_id):
+    usuario = get_object_or_404(Usuario, pk=usuario_id)  # Garante que o usuário existe
 
     if request.method == 'POST':
         form = ClienteForm(request.POST)
@@ -28,7 +28,7 @@ def criar_clientes(request, pk):
             cliente = form.save(commit=False)
             cliente.usuario = usuario  # Associa o cliente ao usuario (OneToOne)
             cliente.save()
-            return redirect('detalhe_usuarios', pk=pk)  # Redireciona para a página de detalhes do usuário, após salvar o cliente
+            return redirect('detalhe_usuarios', usuario_id=usuario_id)  # Redireciona para a página de detalhes do usuário, após salvar o cliente
 
     else:
         form = ClienteForm()
