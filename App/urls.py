@@ -3,8 +3,8 @@ from .views import lista_usuarios, lista_produtos_disponiveis, detalhe_usuarios,
 
 urlpatterns = [
     path('usuarios/', lista_usuarios, name = 'lista_usuarios'),
-    path('usuarios/<int:pk>/detalhe_usuario', detalhe_usuarios, name = 'detalhe_usuarios'),
-    path('usuarios/<int:pk>/clientes/<int:pk>/', detalhe_usuarios, name = 'detalhe_usuarios'),
+    path('usuarios/<int:usuario_id>/detalhe_usuario', detalhe_usuarios, name = 'detalhe_usuarios'),
+    path('usuarios/<int:usuario_id>/clientes/<int:pk>/', detalhe_usuarios, name = 'detalhe_usuarios'),
     path('produtos', lista_produtos_disponiveis, name = 'lista_produtos_disponiveis'),
-    path('usuarios/<int:pk>/clientes/<int:pk>/criar_cliente', criar_clientes, name = 'criar_cliente'),
+    path('usuarios/<int:usuario_id>/criar_cliente', criar_clientes, name = 'criar_cliente'),
 ]

@@ -10,9 +10,10 @@ def lista_usuarios(request):
     usuarios = Usuario.objects.all()
     return render(request, 'App/lista_usuario.html', {'usuarios': usuarios})
 
-def detalhe_usuarios(request, pk): #informações do cliente
-    cliente = get_object_or_404(Usuario, pk=pk)
-    return render(request, 'App/detalhe_usuario.html', {'cliente': cliente})
+def detalhe_usuarios(request, usuario_id): #informações do cliente
+    usuario = get_object_or_404(Usuario, pk=usuario_id)
+    cliente = Cliente.objects.filter(usuario=usuario).first()  # Obtém o cliente associado ao usuário, se existir
+    return render(request, 'App/detalhe_usuario.html', {'cliente': cliente, 'usuario': usuario})
 
 def lista_produtos_disponiveis(request):
     produtos_disponiveis = Produto.objects.all()
