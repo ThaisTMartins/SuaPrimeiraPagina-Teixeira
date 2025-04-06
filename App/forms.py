@@ -14,4 +14,12 @@ class InteresseForm(forms.ModelForm):
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['produto']
+        fields = ['produto', 'quantidade']
+
+class PesquisaProdutoForm(forms.Form):
+    termo = forms.CharField(
+        label="Pesquisar Produto",
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite o nome do produto'})
+    )

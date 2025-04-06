@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Produto, Usuario, Cliente
 from django.http import HttpResponse
-from .forms import ClienteForm, InteresseForm, ProdutoForm
+from .forms import ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm
 
 def index(request):
     return HttpResponse("Olá, bem vindo ao APP!")
@@ -59,3 +59,17 @@ def criar_produto(request):
     else:
         form = ProdutoForm()
     return render(request, 'App/criar_produto.html', {'form': form})  # Garante um retorno sempre
+
+def pesquisa_produto(request):
+    resultados = None
+    form = PesquisaProdutoForm(request.GET)  
+
+
+    if form.is_valid():
+        termo = form.cleaned_data.get('termo')
+        if termo:
+            resultados = Produto.objects.filter(
+                produto__icontains=termo
+            )
+
+    return render(request, 'App/pesquisa_produto.html', {'form': form, 'resultados': resultados})

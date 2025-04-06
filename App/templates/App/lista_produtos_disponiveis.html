@@ -5,10 +5,11 @@
 {% block content %}
 <div class="container mt-4">
     <h2 class="mb-4">Lista de Produtos Disponíveis</h2>
+    <a href="{% url 'pesquisa_produto' %}" class="btn btn-success mb-3">Pesquisar Produto</a>
     {% if produtos %}
         <ul class="list-group mb-3">
             {% for produto in produtos %}
-                <li class="list-group-item">{{ produto.produto }}</li>
+                <li class="list-group-item"><strong>{{ produto.produto }}</strong> - {{ produto.quantidade }}</li>
             {% endfor %}
         </ul>
     {% else %}

@@ -14,6 +14,7 @@ class Cliente(models.Model):
 
 class Produto(models.Model):
     produto = models.CharField(max_length=1000)
+    quantidade = models.IntegerField()
 
 class Interesse(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='interesses')

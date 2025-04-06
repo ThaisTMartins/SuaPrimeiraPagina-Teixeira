@@ -13,6 +13,11 @@
             <label for="{{ form.produto.id_for_label }}" class="form-label">Produto</label>
             {{ form.produto|add_class:"form-control" }}
         </div>
+
+        <div class="mb-3">
+            <label for="{{ form.quantidade.id_for_label }}" class="form-label">Quantidade</label>
+            {{ form.quantidade|add_class:"form-control" }}
+        </div>
         <button type="submit" class="btn btn-primary">Salvar</button>
         <a href="{% url 'home' %}" class="btn btn-secondary">Cancelar</a>
     </form>

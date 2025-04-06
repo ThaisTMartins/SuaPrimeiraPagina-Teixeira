@@ -19,8 +19,8 @@ def popular_banco():
     cliente2 = Cliente.objects.create(usuario=usuario2, email="maria@email.com", ano_nascimento=1985, telefone=987654321, cpf=55566677788)
 
     # Criação de produtos
-    produto1 = Produto.objects.create(produto="Notebook Gamer")
-    produto2 = Produto.objects.create(produto="Smartphone")
+    produto1 = Produto.objects.create(produto="Notebook Gamer", quantidade=10)
+    produto2 = Produto.objects.create(produto="Smartphone", quantidade=20)
 
     # Criação de interesses (dois interesses para cliente1)
     Interesse.objects.create(cliente=cliente1, interesse="TV")
