@@ -16,8 +16,18 @@ def detalhe_usuarios(request, usuario_id): #informações do cliente
     return render(request, 'App/detalhe_usuario.html', {'cliente': cliente, 'usuario': usuario})
 
 def lista_produtos_disponiveis(request):
-    produtos_disponiveis = Produto.objects.all()
-    return render (request, 'App/lista_produtos_disponiveis.html', {'produtos': produtos_disponiveis})
+    form = PesquisaProdutoForm(request.GET)  # Cria o formulário de pesquisa
+    if form.is_valid():
+        termo = form.cleaned_data.get('termo')
+        if termo:
+            produtos_disponiveis = Produto.objects.filter(
+                produto__icontains=termo
+            )
+        else:
+            produtos_disponiveis = Produto.objects.all()
+    else:
+        produtos_disponiveis = Produto.objects.all()
+    return render (request, 'App/lista_produtos_disponiveis.html', {'produtos': produtos_disponiveis, 'form': form})
 
 def criar_clientes(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)  # Garante que o usuário existe
@@ -60,16 +70,16 @@ def criar_produto(request):
         form = ProdutoForm()
     return render(request, 'App/criar_produto.html', {'form': form})  # Garante um retorno sempre
 
-def pesquisa_produto(request):
-    resultados = None
-    form = PesquisaProdutoForm(request.GET)  
+# def pesquisa_produto(request):
+#     resultados = None
+#     form = PesquisaProdutoForm(request.GET)  
 
 
-    if form.is_valid():
-        termo = form.cleaned_data.get('termo')
-        if termo:
-            resultados = Produto.objects.filter(
-                produto__icontains=termo
-            )
+#     if form.is_valid():
+#         termo = form.cleaned_data.get('termo')
+#         if termo:
+#             resultados = Produto.objects.filter(
+#                 produto__icontains=termo
+#             )
 
-    return render(request, 'App/pesquisa_produto.html', {'form': form, 'resultados': resultados})
+#     return render(request, 'App/pesquisa_produto.html', {'form': form, 'resultados': resultados})

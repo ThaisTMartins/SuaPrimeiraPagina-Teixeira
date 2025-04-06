@@ -1,11 +1,21 @@
 {% extends "base.html" %}
 
+{% load widget_tweaks %}
+
 {% block title %}Produtos{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <h2 class="mb-4">Lista de Produtos Disponíveis</h2>
-    <a href="{% url 'pesquisa_produto' %}" class="btn btn-success mb-3">Pesquisar Produto</a>
+    {% comment %} <a href="{% url 'pesquisa_produto' %}" class="btn btn-success mb-3">Pesquisar Produto</a> {% endcomment %}
+    <form method="GET" class="row g-3 mb-4">
+        <div class="col-md-8">
+            {{ form.termo|add_class:"form-control" }}
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary w-100">Buscar</button>
+        </div>
+    </form>
     {% if produtos %}
         <ul class="list-group mb-3">
             {% for produto in produtos %}
