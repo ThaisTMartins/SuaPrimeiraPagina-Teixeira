@@ -16,7 +16,7 @@ class Produto(models.Model):
     produto = models.CharField(max_length=1000)
 
 class Interesse(models.Model):
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='interesses')
     interesse = models.CharField(max_length=100)
 
 # Usada para trazer informações adicionais no banco de dados

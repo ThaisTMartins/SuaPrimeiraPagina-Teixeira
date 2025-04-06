@@ -10,11 +10,23 @@
         
                 {% if cliente.usuario %}
                     <hr>
-                        <h4>Dados do Cliente</h4>
+                        <h3>Dados do Cliente</h3>
                         <p class="card-text"><strong>Email:</strong>{{ cliente.email }}</p>
                         <p class="card-text"><strong>Telefone:</strong>{{ cliente.telefone }}</p>
                         <p class="card-text"><strong>CPF:</strong>{{ cliente.cpf }}</p>
                         <p class="card-text"><strong>Ano Nascimento:</strong>{{ cliente.ano_nascimento }}</p>
+                        {% if cliente.interesses.all %}
+                            <p class="card-text"><strong>Interesses:</strong>
+                                <ul>
+                                    {% for interesse in cliente.interesses.all %}
+                                        <li>{{ interesse.interesse }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </p>
+                        {% else %}
+                            <p class="alert alert-info">Nenhum interesse cadastrado para este cliente.</p>
+                        {% endif %}
+                        <a href="{% url 'criar_interesse' usuario_id=usuario.pk cliente_id=cliente.pk %}" class="btn btn-success mb-3">Cadastrar Interesse</a>
                 {% else %}
                     <p class="alert alert-warning">Este usuário não possui um cliente associado!</p>
                     <a href="{% url 'criar_cliente' usuario_id=usuario.pk %}" class="btn btn-success mb-3">Inserir Dados</a>
