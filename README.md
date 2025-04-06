@@ -12,6 +12,7 @@
 Adicione o nome de usuário e senha que serão utilizados para acessar a área de administrador do sistema.
 
 ## Popular o banco de dados
+Um arquivo foi criado com alguns cadastros, para possibilitar uma visualização mais rápida do funcionamento da aplicação. Se deseja inserir todos os dados manualmente, não execute o comando abaixo:
 `python populate.py`
 
 ## Executar o servidor
@@ -44,10 +45,20 @@ A aplicação simula um site com informações cadastrais de cliente. Para isso,
 | **id_cliente**    |
 | interesse         |
 
+Além dessas tabelas, existe uma chamada Produto, que indica os produtos disponíveis na plataforma:
+
+| Produtos          |
+|-------------------|
+| id                |
+| produto           |
+| quantidade        |
+
 ## Interfaces
 
 As interfaces são dependentes entre si, seguindo a relação apontada nas tabelas do banco de dados. Dessa forma, os seguintes passos de cadastro devem ser seguidos:
 
-1) Cadastro de usuário;
+1) Cadastro de usuário, apenas na página de admin do django;
 2) Cadastro de cliente, associado ao id_usuario;
 3) Cadastro de interesses, associado ao id_cliente;
+
+Além disso, também existe a interface dos produtos disponíveis e o cadastro está habilitado. Futuramente, será feita a configuração para que apenas o admin possa realizar essa adição.
