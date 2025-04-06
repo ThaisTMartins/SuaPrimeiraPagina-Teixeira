@@ -6,7 +6,7 @@
 <div class="container mt-4">
     <h2 class="mb-4">Lista de Usuários</h2>
     {% if usuarios %}
-        <ul class="list-group">
+        <ul class="list-group mb-3">
             {% for usuario in usuarios %}
                 <li class="list-group-item">
                     <a href="{% url 'detalhe_usuarios' usuario_id=usuario.pk %}" class="text-decoration-none">
@@ -18,5 +18,8 @@
     {% else %}
         <p class="alert alert-warning">Nenhum usuário encontrado.</p>
     {% endif %}
+    <div class="d-flex gap-2">
+        <a href="{% url 'home' %}" class="btn btn-primary">Voltar</a>
+    </div>
 </div>
 {% endblock %}

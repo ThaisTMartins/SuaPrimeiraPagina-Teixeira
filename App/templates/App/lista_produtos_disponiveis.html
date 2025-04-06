@@ -6,7 +6,7 @@
 <div class="container mt-4">
     <h2 class="mb-4">Lista de Produtos Disponíveis</h2>
     {% if produtos %}
-        <ul class="list-group">
+        <ul class="list-group mb-3">
             {% for produto in produtos %}
                 <li class="list-group-item">{{ produto.produto }}</li>
             {% endfor %}
@@ -14,6 +14,11 @@
     {% else %}
         <p class="alert alert-warning">Nenhum produto encontrado.</p>
     {% endif %}
-    <a href="{% url 'criar_produto' %}" class="btn btn-success mt-3">Inserir Produto</a>
+    
+    <div class="d-flex gap-2">
+        <a href="{% url 'criar_produto' %}" class="btn btn-success">Inserir Produto</a>
+        <a href="{% url 'home' %}" class="btn btn-primary">Voltar</a>
+    </div>
 </div>
 {% endblock %}
+
