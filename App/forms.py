@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cliente, Interesse, Produto, Usuario
+from .models import Cliente, Interesse, Produto, Usuario, Avatar
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -28,3 +28,8 @@ class UsuarioForm(forms.ModelForm):
     class Meta:
         model = Usuario
         fields = ['nome', 'senha']
+
+class AvatarForm(forms.ModelForm):
+    class Meta:
+        model = Avatar
+        fields = ['imagem']

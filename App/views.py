@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Produto, Usuario, Cliente
+from .models import Produto, Usuario, Cliente, Avatar
 from django.http import HttpResponse
-from .forms import ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm, UsuarioForm
+from .forms import ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm, UsuarioForm, AvatarForm
 from django.contrib.auth.decorators import login_required
 
 def index(request):
@@ -82,6 +82,24 @@ def criar_usuario(request):
     else:
         form = UsuarioForm()
     return render(request, 'App/criar_usuario.html', {'form': form})  # Garante um retorno sempre
+
+@login_required
+def upload_avatar(request):
+    avatar, created = Avatar.objects.get_or_create(user=request.user)  # Tenta obter ou cria um novo avatar
+
+
+    if request.method == 'POST':
+        form = AvatarForm(request.POST, request.FILES, instance=avatar)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil')  # Redireciona para o perfil
+
+
+    else:
+        form = AvatarForm(instance=avatar)
+
+
+    return render(request, 'App/upload_avatar.html', {'form': form})
 
 # def pesquisa_produto(request):
 #     resultados = None

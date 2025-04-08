@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import lista_usuarios, lista_produtos_disponiveis, detalhe_usuarios, criar_clientes, criar_interesse, criar_produto, criar_usuario#, pesquisa_produto
+from .views import lista_usuarios, lista_produtos_disponiveis, detalhe_usuarios, criar_clientes, criar_interesse, criar_produto, criar_usuario, upload_avatar#, pesquisa_produto
 
 urlpatterns = [
     path('usuarios/', lista_usuarios, name = 'lista_usuarios'),
@@ -11,4 +11,5 @@ urlpatterns = [
     path('criar_produto', criar_produto, name='criar_produto'),
     path('criar_usuario', criar_usuario, name= 'criar_usuario'),
     # path('pesquisa_produto', pesquisa_produto, name='pesquisa_produto'),
+    path('editar-avatar/', upload_avatar, name='editar_avatar'),
 ]
