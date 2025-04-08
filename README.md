@@ -57,8 +57,7 @@ Além dessas tabelas, existe uma chamada Produto, que indica os produtos dispon�
 
 As interfaces são dependentes entre si, seguindo a relação apontada nas tabelas do banco de dados. Dessa forma, os seguintes passos de cadastro devem ser seguidos:
 
-1) Cadastro de usuário, apenas na página de admin do django;
+1) Cadastro de usuário, apenas na página de admin do django ou diretamente pela aplicação, após login de admin;
 2) Cadastro de cliente, associado ao id_usuario;
 3) Cadastro de interesses, associado ao id_cliente;
-
-Além disso, também existe a interface dos produtos disponíveis e o cadastro está habilitado. Futuramente, será feita a configuração para que apenas o admin possa realizar essa adição.
+4) Cadastro de produtos, apenas na página de admin do django ou diretamente pela aplicação, após login de admin;
