@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cliente, Interesse, Produto
+from .models import Cliente, Interesse, Produto, Usuario
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -23,3 +23,8 @@ class PesquisaProdutoForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite o nome do produto'})
     )
+
+class UsuarioForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['nome', 'senha']

@@ -19,6 +19,9 @@
         <p class="alert alert-warning">Nenhum usuário encontrado.</p>
     {% endif %}
     <div class="d-flex gap-2">
+        {% if request.user.is_authenticated and request.user.is_superuser %}
+            <a href="{% url 'criar_usuario' %}" class="btn btn-success">Inserir Usuário</a>
+        {% endif %}
         <a href="{% url 'home' %}" class="btn btn-primary">Voltar</a>
     </div>
 </div>

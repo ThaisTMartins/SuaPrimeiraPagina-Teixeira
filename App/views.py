@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Produto, Usuario, Cliente
 from django.http import HttpResponse
-from .forms import ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm
+from .forms import ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm, UsuarioForm
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     return HttpResponse("Olá, bem vindo ao APP!")
@@ -60,6 +61,7 @@ def criar_interesse(request, usuario_id, cliente_id):
         form = InteresseForm()
     return render(request, 'App/criar_interesse.html', {'form': form, 'usuario': usuario, 'cliente': cliente})  # Garante um retorno sempre
 
+@login_required
 def criar_produto(request):
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
@@ -69,6 +71,17 @@ def criar_produto(request):
     else:
         form = ProdutoForm()
     return render(request, 'App/criar_produto.html', {'form': form})  # Garante um retorno sempre
+
+@login_required
+def criar_usuario(request):
+    if request.method == 'POST':
+        form = UsuarioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_usuario')  # Redireciona para a lista de produtos disponíveis após salvar
+    else:
+        form = UsuarioForm()
+    return render(request, 'App/criar_usuario.html', {'form': form})  # Garante um retorno sempre
 
 # def pesquisa_produto(request):
 #     resultados = None

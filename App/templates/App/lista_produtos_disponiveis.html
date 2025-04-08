@@ -27,7 +27,9 @@
     {% endif %}
     
     <div class="d-flex gap-2">
-        <a href="{% url 'criar_produto' %}" class="btn btn-success">Inserir Produto</a>
+        {% if request.user.is_authenticated and request.user.is_superuser %}
+            <a href="{% url 'criar_produto' %}" class="btn btn-success">Inserir Produto</a>
+        {% endif %}
         <a href="{% url 'home' %}" class="btn btn-primary">Voltar</a>
     </div>
 </div>
