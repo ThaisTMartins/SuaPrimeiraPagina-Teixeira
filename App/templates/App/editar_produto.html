@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+
+{% block title %}Editar Produto{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Editar Produto</h2>
+    <form method="POST" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.produto.id_for_label }}" class="form-label">Produto</label>
+            {{ form.produto|add_class:"form-control" }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a href="{% url 'lista_produtos_disponiveis' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

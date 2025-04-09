@@ -7,7 +7,7 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SuaPrimeiraPagina.settings')
 django.setup()
 
-from App.models import Usuario, Cliente, Produto, Interesse  
+from App.models import Usuario, Cliente, Produto, Interesse, Categoria
 
 def popular_banco():
     # Criação de usuários
@@ -18,9 +18,13 @@ def popular_banco():
     cliente1 = Cliente.objects.create(usuario=usuario1, email="joao@email.com", ano_nascimento=1990, telefone=123456789, cpf=11122233344)
     cliente2 = Cliente.objects.create(usuario=usuario2, email="maria@email.com", ano_nascimento=1985, telefone=987654321, cpf=55566677788)
 
+    # Criação de categorias
+    categoria1 = Categoria.objects.create(categoria="Notebook Gamer")
+    categoria2 = Categoria.objects.create(categoria="Smartphone")
+
     # Criação de produtos
-    produto1 = Produto.objects.create(produto="Notebook Gamer", quantidade=10)
-    produto2 = Produto.objects.create(produto="Smartphone", quantidade=20)
+    produto1 = Produto.objects.create(produto="Notebook Gamer", ano_fabricacao=2022, descricao="Notebook para jogos", nome_categoria=categoria1)
+    produto2 = Produto.objects.create(produto="Smartphone", ano_fabricacao=2023, descricao="Smartphone com câmera de alta qualidade", nome_categoria=categoria2)
 
     # Criação de interesses (dois interesses para cliente1)
     Interesse.objects.create(cliente=cliente1, interesse="TV")

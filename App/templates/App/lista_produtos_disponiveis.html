@@ -7,7 +7,8 @@
 {% block content %}
 <div class="container mt-4">
     <h2 class="mb-4">Lista de Produtos Disponíveis</h2>
-    {% comment %} <a href="{% url 'pesquisa_produto' %}" class="btn btn-success mb-3">Pesquisar Produto</a> {% endcomment %}
+
+    <!-- Formulário de pesquisa -->
     <form method="GET" class="row g-3 mb-4">
         <div class="col-md-8">
             {{ form.termo|add_class:"form-control" }}
@@ -16,16 +17,29 @@
             <button type="submit" class="btn btn-primary w-100">Buscar</button>
         </div>
     </form>
+
+    <!-- Lista de produtos -->
     {% if produtos %}
         <ul class="list-group mb-3">
             {% for produto in produtos %}
-                <li class="list-group-item"><strong>{{ produto.produto }}</strong> - {{ produto.quantidade }}</li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ produto.produto }}</strong> - {{ produto.quantidade }}
+                    </div>
+                    {% if request.user.is_authenticated and request.user.is_superuser %}
+                        <div class="btn-group">
+                            <a href="{% url 'editar_produto' produto.id %}" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="{% url 'deletar_produto' produto.id %}" class="btn btn-danger btn-sm">Deletar</a>
+                        </div>
+                    {% endif %}
+                </li>
             {% endfor %}
         </ul>
     {% else %}
         <p class="alert alert-warning">Nenhum produto encontrado.</p>
     {% endif %}
-    
+
+    <!-- Botões de ação -->
     <div class="d-flex gap-2">
         {% if request.user.is_authenticated and request.user.is_superuser %}
             <a href="{% url 'criar_produto' %}" class="btn btn-success">Inserir Produto</a>
@@ -34,4 +48,3 @@
     </div>
 </div>
 {% endblock %}
-

@@ -12,9 +12,14 @@ class Cliente(models.Model):
     telefone = models.IntegerField()
     cpf = models.IntegerField()
 
+class Categoria(models.Model):
+    categoria = models.CharField(max_length=100)
+
 class Produto(models.Model):
     produto = models.CharField(max_length=1000)
-    quantidade = models.IntegerField()
+    descricao = models.CharField(max_length=1000)
+    ano_fabricacao = models.IntegerField()
+    nome_categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE, related_name='produtos')
 
 class Interesse(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='interesses')

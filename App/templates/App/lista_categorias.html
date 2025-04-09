@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %}Categorias{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Lista de Categorias</h2>
+    {% if categorias %}
+        <ul class="list-group mb-3">
+            {% for categoria in categorias %}
+                <li class="list-group-item"><strong>{{ categoria.categoria }}</strong></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="alert alert-warning">Nenhuma categoria encontrada.</p>
+    {% endif %}
+    
+    <div class="d-flex gap-2">
+        <a href="{% url 'criar_categoria' %}" class="btn btn-success">Inserir Categoria</a>
+        <a href="{% url 'home' %}" class="btn btn-primary">Voltar</a>
+    </div>
+</div>
+{% endblock %}
+

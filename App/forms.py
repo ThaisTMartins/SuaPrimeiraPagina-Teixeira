@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cliente, Interesse, Produto, Usuario, Avatar
+from .models import Cliente, Interesse, Produto, Usuario, Avatar, Categoria
 from django.contrib.auth.forms import PasswordChangeForm
 
 class ClienteForm(forms.ModelForm):
@@ -15,7 +15,7 @@ class InteresseForm(forms.ModelForm):
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['produto', 'quantidade']
+        fields = ['produto', 'descricao', 'ano_fabricacao', 'nome_categoria']
 
 class PesquisaProdutoForm(forms.Form):
     termo = forms.CharField(
@@ -29,6 +29,11 @@ class UsuarioForm(forms.ModelForm):
     class Meta:
         model = Usuario
         fields = ['nome', 'senha']
+
+class CategoriaForm(forms.ModelForm):
+    class Meta:
+        model = Categoria
+        fields = ['categoria']  
 
 class AvatarForm(forms.ModelForm):
     class Meta:

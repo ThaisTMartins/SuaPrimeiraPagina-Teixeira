@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Produto, Usuario, Cliente, Avatar
+from .models import Produto, Usuario, Cliente, Avatar, Categoria
 from django.http import HttpResponse
-from .forms import ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm, UsuarioForm, AvatarForm, UsuarioUpdateForm, CustomPasswordChangeForm
+from .forms import ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm, UsuarioForm, CategoriaForm, AvatarForm, UsuarioUpdateForm, CustomPasswordChangeForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, update_session_auth_hash
@@ -87,6 +87,22 @@ def criar_usuario(request):
     return render(request, 'App/criar_usuario.html', {'form': form})  # Garante um retorno sempre
 
 @login_required
+def criar_categoria(request):
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_categorias')  # Redireciona para a lista de categorias após salvar
+    else:
+        form = CategoriaForm()
+    return render(request, 'App/criar_categoria.html', {'form': form})  # Garante um retorno sempre
+
+@login_required
+def lista_categorias(request):
+    categoria = Categoria.objects.all()
+    return render(request, 'App/lista_categorias.html', {'categoria': categoria})
+
+@login_required
 def editar_perfil(request):
     if request.method == 'POST':
         user_form = UsuarioUpdateForm(request.POST, instance=request.user)
@@ -131,16 +147,16 @@ def perfil(request):
 def sobre(request):
     return render(request, 'App/sobre.html')
 
-# def pesquisa_produto(request):
-#     resultados = None
-#     form = PesquisaProdutoForm(request.GET)  
+@login_required
+def editar_produto(request, produto_id):
+    produto = get_object_or_404(Produto, id=produto_id)
 
+    if request.method == "POST":
+        form = ProdutoForm(request.POST, instance=produto)
+        if form.is_valid():
+            produto.save()
+            return redirect('lista_produtos_disponiveis')
+    else:
+        form = ProdutoForm(instance=produto)
 
-#     if form.is_valid():
-#         termo = form.cleaned_data.get('termo')
-#         if termo:
-#             resultados = Produto.objects.filter(
-#                 produto__icontains=termo
-#             )
-
-#     return render(request, 'App/pesquisa_produto.html', {'form': form, 'resultados': resultados})
+    return render(request, 'App/editar_produto.html', {'form': form})
