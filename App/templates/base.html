@@ -32,6 +32,30 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'admin:index' %}">Administrador</a>
                     </li>
+
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'perfil' %}">
+                            <i class="fas fa-user"></i> Meu Perfil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="fas fa-sign-in-alt"></i> Entrar
+                        </a>
+                    </li>
+                    {% comment %} <li class="nav-item">
+                        <a class="nav-link" href="{% url 'registro' %}">
+                            <i class="fas fa-user-plus"></i> Registrar
+                        </a>
+                    </li> {% endcomment %}
+                {% endif %}
                 </ul>
             </div>
         </div>

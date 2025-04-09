@@ -1,8 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Produto, Usuario, Cliente, Avatar
 from django.http import HttpResponse
-from .forms import ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm, UsuarioForm, AvatarForm
+from .forms import ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm, UsuarioForm, AvatarForm, UsuarioUpdateForm, CustomPasswordChangeForm
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 
 def index(request):
     return HttpResponse("Olá, bem vindo ao APP!")
@@ -84,22 +87,49 @@ def criar_usuario(request):
     return render(request, 'App/criar_usuario.html', {'form': form})  # Garante um retorno sempre
 
 @login_required
+def editar_perfil(request):
+    if request.method == 'POST':
+        user_form = UsuarioUpdateForm(request.POST, instance=request.user)
+        password_form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+
+        if user_form.is_valid() and password_form.is_valid():
+            user_form.save()
+            password_form.save()
+            update_session_auth_hash(request, request.user)  # Mantém o usuário logado após alteração de senha
+            messages.success(request, "Perfil e senha atualizados com sucesso!")
+            return redirect('perfil')
+        else:
+            messages.error(request, "Por favor, corrija os erros abaixo.")
+    else:
+        user_form = UsuarioUpdateForm(instance=request.user)
+        password_form = CustomPasswordChangeForm(user=request.user)
+
+    return render(request, 'App/editar_perfil.html', {
+        'user_form': user_form,
+        'password_form': password_form
+    })
+
+
+@login_required
 def upload_avatar(request):
     avatar, created = Avatar.objects.get_or_create(user=request.user)  # Tenta obter ou cria um novo avatar
-
 
     if request.method == 'POST':
         form = AvatarForm(request.POST, request.FILES, instance=avatar)
         if form.is_valid():
             form.save()
             return redirect('perfil')  # Redireciona para o perfil
-
-
     else:
         form = AvatarForm(instance=avatar)
 
-
     return render(request, 'App/upload_avatar.html', {'form': form})
+
+@login_required
+def perfil(request):
+    return render(request, 'App/perfil.html', {'user': request.user})
+
+def sobre(request):
+    return render(request, 'App/sobre.html')
 
 # def pesquisa_produto(request):
 #     resultados = None

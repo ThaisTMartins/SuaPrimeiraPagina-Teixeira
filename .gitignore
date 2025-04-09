@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+
+# Essa linha ignora qualquer arquivo Python com extensão:
+# .pyc (compilado do Python)
+# .pyo (Python otimizado – usado em versões antigas)
+# .pyd (arquivos binários como DLLs geradas no Windows)
