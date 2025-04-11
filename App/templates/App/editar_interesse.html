@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+
+{% block title %}Editar Interesse{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Editar Interesse</h2>
+    <form method="POST" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.interesse.id_for_label }}" class="form-label">Interesse</label>
+            {{ form.interesse|add_class:"form-control" }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a href="{% url 'detalhe_usuarios' usuario_id=usuario_id %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

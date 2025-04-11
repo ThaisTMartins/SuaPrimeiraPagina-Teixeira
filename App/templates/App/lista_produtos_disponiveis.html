@@ -24,7 +24,7 @@
             {% for produto in produtos %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                        <strong>{{ produto.produto }}</strong> - {{ produto.quantidade }}
+                        <strong>{{ produto.produto }}</strong>
                     </div>
                     {% if request.user.is_authenticated and request.user.is_superuser %}
                         <div class="btn-group">

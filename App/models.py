@@ -6,7 +6,7 @@ class Usuario(models.Model):
     senha = models.CharField(max_length=8)
 
 class Cliente(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True) # cascade, vai deletar tudo que estiver associado, no caso os interesses
     email = models.EmailField(max_length=50)
     ano_nascimento = models.IntegerField()
     telefone = models.IntegerField()
@@ -22,7 +22,7 @@ class Produto(models.Model):
     produto = models.CharField(max_length=1000)
     descricao = models.CharField(max_length=1000)
     ano_fabricacao = models.IntegerField()
-    nome_categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE, related_name='produtos')
+    nome_categoria = models.ForeignKey('Categoria', on_delete=models.PROTECT, related_name='produtos') # Protege a categoria, não deixa deletar se tiver produtos associados
 
 class Interesse(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='interesses')

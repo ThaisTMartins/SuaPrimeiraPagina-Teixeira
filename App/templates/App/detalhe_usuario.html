@@ -10,7 +10,12 @@
 
             {% if cliente.usuario %}
                 <hr>
-                <h3>Dados do Cliente</h3>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <h3>Dados do Cliente</h3>
+                    <div class="btn-group">
+                        <a href="{% url 'editar_cliente' usuario_id=usuario.pk cliente_id=cliente.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                    </div>
+                </li>
                 <p class="card-text"><strong>Email:</strong> {{ cliente.email }}</p>
                 <p class="card-text"><strong>Telefone:</strong> {{ cliente.telefone }}</p>
                 <p class="card-text"><strong>CPF:</strong> {{ cliente.cpf }}</p>
@@ -20,7 +25,13 @@
                     <p class="card-text"><strong>Interesses:</strong></p>
                     <ul class="list-group mb-3">
                         {% for interesse in cliente.interesses.all %}
-                            <li class="list-group-item">{{ interesse.interesse }}</li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ interesse.interesse }}
+                                <div class="btn-group">
+                                    <a href="{% url 'editar_interesse' usuario_id=usuario.pk cliente_id=cliente.pk interesse_id=interesse.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                                    <a href="{% url 'deletar_interesse' usuario_id=usuario.pk cliente_id=cliente.pk interesse_id=interesse.pk %}" class="btn btn-danger btn-sm">Deletar</a>
+                                </div>
+                            </li>
                         {% endfor %}
                     </ul>
                 {% else %}
@@ -37,7 +48,7 @@
                 {% else %}
                     <a href="{% url 'criar_cliente' usuario_id=usuario.pk %}" class="btn btn-success">Inserir Dados</a>
                 {% endif %}
-                
+
                 <a href="{% url 'lista_usuarios' %}" class="btn btn-primary">Voltar</a>
             </div>
         </div>

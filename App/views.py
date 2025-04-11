@@ -1,15 +1,25 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Produto, Usuario, Cliente, Avatar, Categoria
+from .models import Produto, Usuario, Cliente, Avatar, Categoria, Interesse
 from django.http import HttpResponse
-from .forms import ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm, UsuarioForm, CategoriaForm, AvatarForm, UsuarioUpdateForm, CustomPasswordChangeForm
+from .forms import (ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm, UsuarioForm,
+                    CategoriaForm, AvatarForm, UsuarioUpdateForm, CustomPasswordChangeForm)
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
+# Outras views
 def index(request):
     return HttpResponse("Olá, bem vindo ao APP!")
 
+@login_required
+def perfil(request):
+    return render(request, 'App/perfil.html', {'user': request.user})
+
+def sobre(request):
+    return render(request, 'App/sobre.html')
+
+# Visualizar
 def lista_usuarios(request):
     usuarios = Usuario.objects.all()
     return render(request, 'App/lista_usuario.html', {'usuarios': usuarios})
@@ -33,6 +43,12 @@ def lista_produtos_disponiveis(request):
         produtos_disponiveis = Produto.objects.all()
     return render (request, 'App/lista_produtos_disponiveis.html', {'produtos': produtos_disponiveis, 'form': form})
 
+@login_required
+def lista_categorias(request):
+    categorias = Categoria.objects.prefetch_related('produtos').all()
+    return render(request, 'App/lista_categorias.html', {'categorias': categorias})
+
+# Inserir
 def criar_clientes(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)  # Garante que o usuário existe
 
@@ -97,11 +113,61 @@ def criar_categoria(request):
         form = CategoriaForm()
     return render(request, 'App/criar_categoria.html', {'form': form})  # Garante um retorno sempre
 
+# Editar
 @login_required
-def lista_categorias(request):
-    categoria = Categoria.objects.all()
-    return render(request, 'App/lista_categorias.html', {'categoria': categoria})
+def editar_produto(request, produto_id):
+    produto = get_object_or_404(Produto, id=produto_id)
 
+    if request.method == "POST":
+        form = ProdutoForm(request.POST, instance=produto)
+        if form.is_valid():
+            produto.save()
+            return redirect('lista_produtos_disponiveis')
+    else:
+        form = ProdutoForm(instance=produto)
+
+    return render(request, 'App/editar_produto.html', {'form': form})
+
+@login_required
+def editar_categoria(request, categoria_id):
+    categoria = get_object_or_404(Categoria, id=categoria_id)
+
+    if request.method == "POST":
+        form = CategoriaForm(request.POST, instance=categoria)
+        if form.is_valid():
+            categoria.save()
+            return redirect('lista_categorias')
+    else:
+        form = CategoriaForm(instance=categoria)
+
+    return render(request, 'App/editar_categoria.html', {'form': form})
+
+def editar_cliente(request, usuario_id, cliente_id):
+    cliente = get_object_or_404(Cliente, pk=cliente_id, usuario_id=usuario_id)
+
+    if request.method == "POST":
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            cliente.save()
+            return redirect('detalhe_usuarios', usuario_id=usuario_id)
+    else:
+        form = ClienteForm(instance=cliente)
+
+    return render(request, 'App/editar_cliente.html', {'form': form, 'usuario_id': usuario_id, 'cliente_id': cliente_id})
+
+def editar_interesse(request, usuario_id, cliente_id, interesse_id):
+    interesse = get_object_or_404(Interesse, id=interesse_id)
+
+    if request.method == "POST":
+        form = InteresseForm(request.POST, instance=interesse)
+        if form.is_valid():
+            interesse.save()
+            return redirect('detalhe_usuarios', usuario_id=usuario_id)
+    else:
+        form = InteresseForm(instance=interesse)
+
+    return render(request, 'App/editar_interesse.html', {'form': form, 'usuario_id': usuario_id, 'cliente_id': cliente_id})
+    
 @login_required
 def editar_perfil(request):
     if request.method == 'POST':
@@ -125,7 +191,7 @@ def editar_perfil(request):
         'password_form': password_form
     })
 
-
+# Upload
 @login_required
 def upload_avatar(request):
     avatar, created = Avatar.objects.get_or_create(user=request.user)  # Tenta obter ou cria um novo avatar
@@ -140,23 +206,32 @@ def upload_avatar(request):
 
     return render(request, 'App/upload_avatar.html', {'form': form})
 
+# Deletar
 @login_required
-def perfil(request):
-    return render(request, 'App/perfil.html', {'user': request.user})
-
-def sobre(request):
-    return render(request, 'App/sobre.html')
-
-@login_required
-def editar_produto(request, produto_id):
+def deletar_produto(request, produto_id):
     produto = get_object_or_404(Produto, id=produto_id)
-
+   
     if request.method == "POST":
-        form = ProdutoForm(request.POST, instance=produto)
-        if form.is_valid():
-            produto.save()
-            return redirect('lista_produtos_disponiveis')
-    else:
-        form = ProdutoForm(instance=produto)
+        produto.delete()
+        return redirect('lista_produtos_disponiveis')
 
-    return render(request, 'App/editar_produto.html', {'form': form})
+    return render(request, 'App/confirmar_deletar_produto.html', {'produto': produto})
+
+@login_required
+def deletar_categoria(request, categoria_id):
+    categoria = get_object_or_404(Categoria, id=categoria_id)
+   
+    if request.method == "POST":
+        categoria.delete()
+        return redirect('lista_categorias')
+
+    return render(request, 'App/confirmar_deletar_categoria.html', {'categoria': categoria})
+
+def deletar_interesse(request, usuario_id, cliente_id, interesse_id):
+    interesse = get_object_or_404(Interesse, id=interesse_id)
+   
+    if request.method == "POST":
+        interesse.delete()
+        return redirect('detalhe_usuarios', usuario_id=usuario_id)
+
+    return render(request, 'App/confirmar_deletar_interesse.html', {'interesse': interesse, 'usuario_id': usuario_id, 'cliente_id': cliente_id})
