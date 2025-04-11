@@ -29,6 +29,10 @@ def detalhe_usuarios(request, usuario_id): #informações do cliente
     cliente = Cliente.objects.filter(usuario=usuario).first()  # Obtém o cliente associado ao usuário, se existir
     return render(request, 'App/detalhe_usuario.html', {'cliente': cliente, 'usuario': usuario})
 
+def detalhe_produto(request, produto_id):
+    produto = get_object_or_404(Produto, pk=produto_id)
+    return render(request, 'App/detalhe_produto.html', {'produto': produto})
+
 def lista_produtos_disponiveis(request):
     form = PesquisaProdutoForm(request.GET)  # Cria o formulário de pesquisa
     if form.is_valid():

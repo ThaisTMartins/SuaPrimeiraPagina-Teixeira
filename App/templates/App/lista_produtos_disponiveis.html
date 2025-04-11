@@ -24,7 +24,9 @@
             {% for produto in produtos %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                        <strong>{{ produto.produto }}</strong>
+                        <a href="{% url 'detalhe_produto' produto_id=produto.pk %}" class="text-decoration-none">
+                            {{ produto.produto }}
+                        </a>
                     </div>
                     {% if request.user.is_authenticated and request.user.is_superuser %}
                         <div class="btn-group">

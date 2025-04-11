@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import (lista_usuarios, lista_produtos_disponiveis, lista_categorias, detalhe_usuarios,
+from .views import (lista_usuarios, lista_produtos_disponiveis, lista_categorias, detalhe_usuarios, detalhe_produto,
                     criar_clientes, criar_interesse, criar_produto, criar_usuario, criar_categoria,
                     upload_avatar, sobre, perfil, editar_perfil, editar_produto, editar_categoria, editar_interesse, editar_cliente, editar_usuario,
                     deletar_categoria, deletar_produto, deletar_interesse, deletar_usuario)
@@ -16,6 +16,7 @@ urlpatterns = [
     path('usuarios/<int:usuario_id>/clientes/<int:cliente_id>/deletar_interesse/<int:interesse_id>/', deletar_interesse, name='deletar_interesse'),
     path('usuarios/<int:usuario_id>/editar_cliente/<int:cliente_id>/', editar_cliente, name='editar_cliente'),
     path('criar_produto', criar_produto, name='criar_produto'),
+    path('produtos/<int:produto_id>/detalhe_produto/', detalhe_produto, name='detalhe_produto'),
     path('criar_usuario', criar_usuario, name= 'criar_usuario'),
     path('criar_categoria', criar_categoria, name='criar_categoria'),
     path('lista_categorias', lista_categorias, name='lista_categorias'),

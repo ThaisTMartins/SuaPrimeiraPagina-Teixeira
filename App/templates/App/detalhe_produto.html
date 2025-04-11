@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes do Produto{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-body">
+            <h2 class="card-title">{{ produto.produto }}</h2>
+
+            <h3>Dados do Produto</h3>
+            <p class="card-text"><strong>Descrição:</strong> {{ produto.descricao }}</p>
+            <p class="card-text"><strong>Categoria:</strong> {{ produto.nome_categoria }}</p>
+            <p class="card-text"><strong>Ano Fabricação:</strong> {{ produto.ano_fabricacao }}</p>
+
+            <!-- Botões alinhados -->
+            <div class="d-flex gap-2 mt-3">
+                {% if request.user.is_authenticated and request.user.is_superuser %}
+                    <a href="{% url 'editar_produto' produto_id=produto.pk %}" class="btn btn-warning">Editar</a>
+                {% endif %}
+                <a href="{% url 'lista_usuarios' %}" class="btn btn-primary">Voltar</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
