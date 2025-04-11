@@ -1,13 +1,14 @@
 from django.urls import path, include
 from .views import (lista_usuarios, lista_produtos_disponiveis, lista_categorias, detalhe_usuarios,
                     criar_clientes, criar_interesse, criar_produto, criar_usuario, criar_categoria,
-                    upload_avatar, sobre, perfil, editar_perfil, editar_produto, editar_categoria, editar_interesse, editar_cliente,
-                    deletar_categoria, deletar_produto, deletar_interesse)
+                    upload_avatar, sobre, perfil, editar_perfil, editar_produto, editar_categoria, editar_interesse, editar_cliente, editar_usuario,
+                    deletar_categoria, deletar_produto, deletar_interesse, deletar_usuario)
 from django.contrib.auth import views as auth_views  
 
 urlpatterns = [
     path('usuarios/', lista_usuarios, name = 'lista_usuarios'),
-    path('usuarios/<int:usuario_id>/deletar_usuario/', lista_usuarios, name='deletar_usuario'),
+    path('usuarios/<int:usuario_id>/editar_usuario', editar_usuario, name = 'editar_usuario'),
+    path('usuarios/<int:usuario_id>/deletar_usuario', deletar_usuario, name = 'deletar_usuario'),
     path('usuarios/<int:usuario_id>/detalhe_usuario/', detalhe_usuarios, name='detalhe_usuarios'),
     path('usuarios/<int:usuario_id>/criar_cliente', criar_clientes, name = 'criar_cliente'),
     path('usuarios/<int:usuario_id>/clientes/<int:cliente_id>/criar_interesse', criar_interesse, name='criar_interesse'),

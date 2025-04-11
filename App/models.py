@@ -6,7 +6,7 @@ class Usuario(models.Model):
     senha = models.CharField(max_length=8)
 
 class Cliente(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True) # cascade, vai deletar tudo que estiver associado, no caso os interesses
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True, related_name='clientes') # cascade, vai deletar tudo que estiver associado, no caso os interesses
     email = models.EmailField(max_length=50)
     ano_nascimento = models.IntegerField()
     telefone = models.IntegerField()

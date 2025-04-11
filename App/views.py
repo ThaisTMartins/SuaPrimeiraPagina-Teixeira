@@ -129,6 +129,20 @@ def editar_produto(request, produto_id):
     return render(request, 'App/editar_produto.html', {'form': form})
 
 @login_required
+def editar_usuario(request, usuario_id):
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+
+    if request.method == "POST":
+        form = UsuarioForm(request.POST, instance=usuario)
+        if form.is_valid():
+            usuario.save()
+            return redirect('lista_usuario')
+    else:
+        form = UsuarioForm(instance=usuario)
+
+    return render(request, 'App/editar_usuario.html', {'form': form})
+
+@login_required
 def editar_categoria(request, categoria_id):
     categoria = get_object_or_404(Categoria, id=categoria_id)
 
@@ -216,6 +230,16 @@ def deletar_produto(request, produto_id):
         return redirect('lista_produtos_disponiveis')
 
     return render(request, 'App/confirmar_deletar_produto.html', {'produto': produto})
+
+@login_required
+def deletar_usuario(request, usuario_id):
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+   
+    if request.method == "POST":
+        usuario.delete()
+        return redirect('lista_usuarios')
+
+    return render(request, 'App/confirmar_deletar_usuario.html', {'usuario': usuario})
 
 @login_required
 def deletar_categoria(request, categoria_id):
