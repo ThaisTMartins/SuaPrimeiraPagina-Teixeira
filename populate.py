@@ -1,5 +1,4 @@
 # Esse arquivo irá popular o banco de dados com dados simulados para que seja mais fácil verificar o funcionamento da aplicação
-
 import os
 import django
 
@@ -10,29 +9,97 @@ django.setup()
 from App.models import Usuario, Cliente, Produto, Interesse, Categoria
 
 def popular_banco():
-    # Criação de usuários
-    usuario1 = Usuario.objects.create(nome="João", senha="12345678")
-    usuario2 = Usuario.objects.create(nome="Maria", senha="87654321")
+    # Usuário administrador padrão do sistema
+    admin_padrao = Usuario.objects.create_user(
+        password='admin',
+        username='admin',
+        tipo_usuario='A',
+        is_superuser=True,
+        is_staff=True
+    )
+    admin_padrao.save()
 
-    # Criação de clientes (relacionados aos usuários)
-    cliente1 = Cliente.objects.create(usuario=usuario1, email="joao@email.com", ano_nascimento=1990, telefone=123456789, cpf=11122233344)
-    cliente2 = Cliente.objects.create(usuario=usuario2, email="maria@email.com", ano_nascimento=1985, telefone=987654321, cpf=55566677788)
+    # Usuário administrador (Gabriel)
+    admin_gabriel = Usuario.objects.create_user(
+        password='123456',
+        username='Gabriel',
+        tipo_usuario='A',
+        is_superuser=True,
+        is_staff=True
+    )
+    admin_gabriel.save()
 
-    # Criação de categorias
-    categoria1 = Categoria.objects.create(categoria="Notebook Gamer")
-    categoria2 = Categoria.objects.create(categoria="Smartphone")
+    # Usuários clientes
+    user1 = Usuario.objects.create_user(
+        password='123456',
+        username='jsouza1',
+        tipo_usuario='C'
+    )
+    user2 = Usuario.objects.create_user(
+        password='123456',
+        username='cferreira1',
+        tipo_usuario='C'
+    )
 
-    # Criação de produtos
-    produto1 = Produto.objects.create(produto="Notebook Gamer", ano_fabricacao=2022, descricao="Notebook para jogos", nome_categoria=categoria1)
-    produto2 = Produto.objects.create(produto="Smartphone", ano_fabricacao=2023, descricao="Smartphone com câmera de alta qualidade", nome_categoria=categoria2)
+    # Clientes relacionados
+    cliente1 = Cliente.objects.create(
+        usuario=user1,
+        nome ='Joana',
+        sobrenome='Souza',
+        cpf='22222222222',
+        email='joana@email.com',
+        data_nascimento='1992-04-10',
+        telefone=11911112222
+    )
+    cliente2 = Cliente.objects.create(
+        usuario=user2,
+        nome = 'Carlos',
+        sobrenome='Ferreira',
+        cpf='33333333333',
+        email='carlos@email.com',
+        data_nascimento='1988-12-25',
+        telefone=11933334444
+    )
 
-    # Criação de interesses (dois interesses para cliente1)
-    Interesse.objects.create(cliente=cliente1, interesse="TV")
-    Interesse.objects.create(cliente=cliente1, interesse="Case")
-    Interesse.objects.create(cliente=cliente2, interesse="Headset")
+    # Categorias
+    categoria_notebook = Categoria.objects.create(categoria="Notebook")
+    categoria_tv = Categoria.objects.create(categoria="TV")
+    categoria_fone = Categoria.objects.create(categoria="Fone de Ouvido")
 
-    print("Dados populados com sucesso!")
+    # Produtos
+    Produto.objects.create(
+        produto="Notebook Dell",
+        descricao="Notebook com alto desempenho.",
+        ano_fabricacao=2022,
+        nome_categoria=categoria_notebook,
+        preco=4200.00,
+        quantidade=5
+    )
+    Produto.objects.create(
+        produto="Smart TV 50\"",
+        descricao="TV com resolução 4K e apps integrados.",
+        ano_fabricacao=2023,
+        nome_categoria=categoria_tv,
+        preco=3000.00,
+        quantidade=3
+    )
+    Produto.objects.create(
+        produto="Fone Bluetooth JBL",
+        descricao="Fone sem fio com cancelamento de ruído.",
+        ano_fabricacao=2021,
+        nome_categoria=categoria_fone,
+        preco=399.90,
+        quantidade=10
+    )
+
+    # Interesses
+    Interesse.objects.create(cliente=cliente1, interesse="Notebook")
+    Interesse.objects.create(cliente=cliente1, interesse="Smart TV")
+    Interesse.objects.create(cliente=cliente2, interesse="Fone de Ouvido")
+    Interesse.objects.create(cliente=cliente2, interesse="Tablet")
+
+    print("Banco de dados populado com sucesso!")
 
 if __name__ == '__main__':
     popular_banco()
-
+    # Para executar este script, use o seguinte comando no terminal: python populate.py

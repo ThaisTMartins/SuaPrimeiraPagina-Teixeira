@@ -10,15 +10,31 @@
 
             <h3>Dados do Produto</h3>
             <p class="card-text"><strong>Descrição:</strong> {{ produto.descricao }}</p>
-            <p class="card-text"><strong>Categoria:</strong> {{ produto.nome_categoria }}</p>
             <p class="card-text"><strong>Ano Fabricação:</strong> {{ produto.ano_fabricacao }}</p>
+            <p class="card-text"><strong>Valor:</strong> R$ {{ produto.preco|floatformat:2 }}</p>
+            <p class="card-text"><strong>Status:</strong>
+                <span class="badge
+                    {% if produto.status == 'D' %}bg-success
+                    {% elif produto.status == 'V' %}bg-danger
+                    {% elif produto.status == 'R' %}bg-secondary
+                    {% endif %}">
+                    {{ produto.get_status_display }}
+                </span>
+            </p>
+            <p class="card-text"><strong>Categoria:</strong> {{ produto.nome_categoria }}</p>
+            <p class="card-text"><strong>Data Cadastro:</strong> {{ produto.data_cadastro }}</p>
+
+            {% if request.user.is_superuser %}
+                <p class="card-text"><strong>Data Atualização:</strong> {{ produto.data_atualizacao }}</p>
+                <p class="card-text"><strong>Usuário:</strong> {{ produto.usuario.username }}</p>
+            {% endif %}
 
             <!-- Botões alinhados -->
             <div class="d-flex gap-2 mt-3">
                 {% if request.user.is_authenticated and request.user.is_superuser %}
                     <a href="{% url 'editar_produto' produto_id=produto.pk %}" class="btn btn-warning">Editar</a>
                 {% endif %}
-                <a href="{% url 'lista_usuarios' %}" class="btn btn-primary">Voltar</a>
+                <a href="{% url 'lista_produtos_disponiveis' %}" class="btn btn-primary">Voltar</a>
             </div>
         </div>
     </div>

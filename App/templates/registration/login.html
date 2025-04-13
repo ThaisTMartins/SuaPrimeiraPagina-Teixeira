@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -13,7 +12,7 @@
                     <form method="post">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label class="form-label">Usuário</label>
+                            <label class="form-label">Nome</label>
                             <input type="text" name="username" class="form-control" required>
                         </div>
                         <div class="mb-3">

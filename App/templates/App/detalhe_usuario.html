@@ -12,7 +12,7 @@
                 <hr>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <h3>Dados do Cliente</h3>
-                    {% if request.user.is_authenticated %}
+                    {% if request.user.is_authenticated and request.user.pk == usuario.pk %}
                         <div class="btn-group">
                             <a href="{% url 'editar_cliente' usuario_id=usuario.pk cliente_id=cliente.pk %}" class="btn btn-warning btn-sm">Editar</a>
                         </div>
@@ -20,8 +20,7 @@
                 </li>
                 <p class="card-text"><strong>Email:</strong> {{ cliente.email }}</p>
                 <p class="card-text"><strong>Telefone:</strong> {{ cliente.telefone }}</p>
-                <p class="card-text"><strong>CPF:</strong> {{ cliente.cpf }}</p>
-                <p class="card-text"><strong>Ano Nascimento:</strong> {{ cliente.ano_nascimento }}</p>
+                <p class="card-text"><strong>Data Nascimento:</strong> {{ cliente.data_nascimento|date:"d/m/Y" }}</p>
 
                 {% if cliente.interesses.all %}
                     <p class="card-text"><strong>Interesses:</strong></p>
@@ -29,7 +28,7 @@
                         {% for interesse in cliente.interesses.all %}
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 {{ interesse.interesse }}
-                                {% if request.user.is_authenticated %}
+                                {% if request.user.is_authenticated and request.user.pk == usuario.pk %}
                                     <div class="btn-group">
                                         <a href="{% url 'editar_interesse' usuario_id=usuario.pk cliente_id=cliente.pk interesse_id=interesse.pk %}" class="btn btn-warning btn-sm">Editar</a>
                                         <a href="{% url 'deletar_interesse' usuario_id=usuario.pk cliente_id=cliente.pk interesse_id=interesse.pk %}" class="btn btn-danger btn-sm">Deletar</a>
@@ -47,12 +46,11 @@
 
             <!-- Botões alinhados -->
             <div class="d-flex gap-2 mt-3">
-                {% if cliente.usuario %}
+                {% if cliente.usuario and request.user.pk == usuario.pk %}
                     <a href="{% url 'criar_interesse' usuario_id=usuario.pk cliente_id=cliente.pk %}" class="btn btn-success">Cadastrar Interesse</a>
-                {% else %}
+                {% elif not cliente.usuario and request.user.pk == usuario.pk %}
                     <a href="{% url 'criar_cliente' usuario_id=usuario.pk %}" class="btn btn-success">Inserir Dados</a>
                 {% endif %}
-
                 <a href="{% url 'lista_usuarios' %}" class="btn btn-primary">Voltar</a>
             </div>
         </div>

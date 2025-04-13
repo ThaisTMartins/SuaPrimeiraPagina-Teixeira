@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from django.http import HttpResponseForbidden
+from django.utils import timezone
 
 # Outras views
 def index(request):
@@ -20,10 +22,12 @@ def sobre(request):
     return render(request, 'App/sobre.html')
 
 # Visualizar
+@login_required
 def lista_usuarios(request):
     usuarios = Usuario.objects.all()
     return render(request, 'App/lista_usuario.html', {'usuarios': usuarios})
 
+@login_required
 def detalhe_usuarios(request, usuario_id): #informações do cliente
     usuario = get_object_or_404(Usuario, pk=usuario_id)
     cliente = Cliente.objects.filter(usuario=usuario).first()  # Obtém o cliente associado ao usuário, se existir
@@ -53,8 +57,12 @@ def lista_categorias(request):
     return render(request, 'App/lista_categorias.html', {'categorias': categorias})
 
 # Inserir
+@login_required
 def criar_clientes(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)  # Garante que o usuário existe
+
+    if request.user.pk != usuario_id:
+        return HttpResponseForbidden("Você não tem permissão para editar este cliente.")
 
     if request.method == 'POST':
         form = ClienteForm(request.POST)
@@ -69,9 +77,13 @@ def criar_clientes(request, usuario_id):
 
     return render(request, 'App/criar_cliente.html', {'form': form, 'usuario': usuario})  # Garante um retorno sempre
 
+@login_required
 def criar_interesse(request, usuario_id, cliente_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)  # Garante que o usuário existe
     cliente = get_object_or_404(Cliente, pk=cliente_id)  # Garante que o cliente existe
+
+    if request.user.pk != usuario_id:
+        return HttpResponseForbidden("Você não tem permissão para editar este cliente.")
 
     if request.method == 'POST':
         form = InteresseForm(request.POST)
@@ -89,11 +101,15 @@ def criar_produto(request):
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
         if form.is_valid():
+            produto = form.save(commit=False)
+            produto.data_publicacao = timezone.now()  # Adiciona a data de publicação automaticamente
+            produto.data_modificao = timezone.now()
+            produto.autor_modificacao = request.user  # Associa o produto ao usuário logado no momento
             form.save()
             return redirect('lista_produtos_disponiveis')  # Redireciona para a lista de produtos disponíveis após salvar
     else:
         form = ProdutoForm()
-    return render(request, 'App/criar_produto.html', {'form': form})  # Garante um retorno sempre
+    return render(request, 'App/criar_produto.html', {'form': form})
 
 @login_required
 def criar_usuario(request):
@@ -125,6 +141,10 @@ def editar_produto(request, produto_id):
     if request.method == "POST":
         form = ProdutoForm(request.POST, instance=produto)
         if form.is_valid():
+            produto = form.save(commit=False)
+            produto.data_modificao = timezone.now()
+            produto.data_publicacao = produto.data_publicacao  # Mantém a data de publicação original
+            produto.autor_modificacao = request.user  # Associa o produto ao usuário logado no momento
             produto.save()
             return redirect('lista_produtos_disponiveis')
     else:
@@ -135,10 +155,14 @@ def editar_produto(request, produto_id):
 @login_required
 def editar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, id=usuario_id)
-
+    
     if request.method == "POST":
         form = UsuarioForm(request.POST, instance=usuario)
         if form.is_valid():
+            # Se o usuário logado NÃO é admin, então mantém o tipo padrão (cliente)
+            if request.user.tipo_usuario != Usuario.TipoUsuario.admin:
+                usuario = form.save(commit=False)
+                usuario.tipo_usuario = Usuario.TipoUsuario.cliente  # Força tipo cliente
             usuario.save()
             return redirect('lista_usuario')
     else:
@@ -160,9 +184,13 @@ def editar_categoria(request, categoria_id):
 
     return render(request, 'App/editar_categoria.html', {'form': form})
 
+@login_required
 def editar_cliente(request, usuario_id, cliente_id):
     cliente = get_object_or_404(Cliente, pk=cliente_id, usuario_id=usuario_id)
 
+    if request.user.pk != usuario_id:
+        return HttpResponseForbidden("Você não tem permissão para editar este cliente.")
+    
     if request.method == "POST":
         form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
@@ -173,9 +201,13 @@ def editar_cliente(request, usuario_id, cliente_id):
 
     return render(request, 'App/editar_cliente.html', {'form': form, 'usuario_id': usuario_id, 'cliente_id': cliente_id})
 
+@login_required
 def editar_interesse(request, usuario_id, cliente_id, interesse_id):
     interesse = get_object_or_404(Interesse, id=interesse_id)
 
+    if request.user.pk != usuario_id:
+        return HttpResponseForbidden("Você não tem permissão para editar este cliente.")
+    
     if request.method == "POST":
         form = InteresseForm(request.POST, instance=interesse)
         if form.is_valid():
@@ -255,8 +287,12 @@ def deletar_categoria(request, categoria_id):
 
     return render(request, 'App/confirmar_deletar_categoria.html', {'categoria': categoria})
 
+@login_required
 def deletar_interesse(request, usuario_id, cliente_id, interesse_id):
     interesse = get_object_or_404(Interesse, id=interesse_id)
+
+    if request.user.pk != usuario_id:
+        return HttpResponseForbidden("Você não tem permissão para editar este cliente.")
    
     if request.method == "POST":
         interesse.delete()
