@@ -7,8 +7,7 @@ class Usuario(AbstractUser): # Optei por fazer um usuário personalizado, para q
         administrador = 'A', 'Administrador'
         cliente = 'C', 'Cliente'
     tipo_usuario = models.CharField(max_length=1, choices=TipoUsuario.choices, default=TipoUsuario.cliente) # Tipo de usuário, padrão cliente
-    username = models.CharField(max_length=100, unique=True) # Nome de usuário único, é tipo o nickname para logar
-    password = models.CharField(max_length=8)
+    # Não é necessário definir password e username, pois já estão definidos no AbstractUser
 
 class Cliente(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True, related_name='clientes') # cascade, vai deletar tudo que estiver associado, no caso os interesses

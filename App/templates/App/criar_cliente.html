@@ -30,8 +30,16 @@
             {{ form.telefone|add_class:"form-control" }}
         </div>
         <div class="mb-3">
-            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+            <label for="id_email" class="form-label">Email</label>
             {{ form.email|add_class:"form-control" }}
+            <!-- Exibindo erros do campo de email -->
+            {% if form.email.errors %}
+                <div class="text-danger">
+                    {% for error in form.email.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
         <button type="submit" class="btn btn-primary">Salvar</button>
         <a href="{% url 'detalhe_usuarios' usuario_id=usuario.pk %}" class="btn btn-secondary">Cancelar</a>

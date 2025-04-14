@@ -10,9 +10,13 @@
             <a href="{% url 'admin:index' %}" class="btn btn-outline-primary w-100">Administrador</a>
         </li>
         <li class="list-group-item">
-            <a href="{% url 'lista_usuarios' %}" class="btn btn-outline-primary w-100">Usuários</a>
+            <a href="{% url 'criar_usuario' %}" class="btn btn-outline-primary w-100">Registrar Novo Usuário</a>
         </li>
         {% if request.user.is_authenticated and request.user.is_superuser %}
+            <li class="list-group-item">
+                <a href="{% url 'lista_usuarios' %}" class="btn btn-outline-primary w-100">Usuários</a>
+            </li>
+
             <li class="list-group-item">
                 <a href="{% url 'lista_categorias' %}" class="btn btn-outline-primary w-100">Categorias</a>
             </li>

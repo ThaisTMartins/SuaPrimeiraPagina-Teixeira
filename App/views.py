@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Produto, Usuario, Cliente, Avatar, Categoria, Interesse
 from django.http import HttpResponse
-from .forms import (ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm, UsuarioForm,
+from .forms import (ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm, RegistroUsuarioForm, UsuarioForm,
                     CategoriaForm, AvatarForm, UsuarioUpdateForm, CustomPasswordChangeForm)
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -111,16 +111,38 @@ def criar_produto(request):
         form = ProdutoForm()
     return render(request, 'App/criar_produto.html', {'form': form})
 
-@login_required
 def criar_usuario(request):
     if request.method == 'POST':
-        form = UsuarioForm(request.POST)
+        form = RegistroUsuarioForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('lista_usuario')  # Redireciona para a lista de produtos disponíveis após salvar
+            username = form.cleaned_data['username']
+
+            # Verifica se o nome de usuário já existe
+            if Usuario.objects.filter(username=username).exists():
+                # Se o usuário já existir, mostramos uma mensagem de erro
+                messages.error(request, "Este nome de usuário já está em uso. Tente outro.")
+                return redirect('criar_usuario')  # Redireciona de volta para a tela de registro
+
+            # Salvando o novo usuário
+            usuario = form.save(commit=False)
+            usuario.tipo_usuario = Usuario.TipoUsuario.cliente  # Define o tipo de usuário como cliente por padrão
+            usuario.set_password(form.cleaned_data['password'])  # Definindo a senha de maneira segura
+            usuario.save()
+
+            # Autenticando o usuário automaticamente após o registro
+            login(request, usuario)
+
+            # Mensagem de sucesso
+            messages.success(request, "Cadastro realizado com sucesso! Você foi autenticado.")
+
+            # Redirecionando para a página inicial ou outra página de sucesso
+            return redirect('home')  # Altere 'home' para o nome de URL da sua página inicial
+        else:
+            print(form.errors)
     else:
-        form = UsuarioForm()
-    return render(request, 'App/criar_usuario.html', {'form': form})  # Garante um retorno sempre
+        form = RegistroUsuarioForm()
+
+    return render(request, 'App/criar_usuario.html', {'form': form})
 
 @login_required
 def criar_categoria(request):
@@ -220,25 +242,53 @@ def editar_interesse(request, usuario_id, cliente_id, interesse_id):
     
 @login_required
 def editar_perfil(request):
+    usuario = request.user  # Obtém o usuário logado
+    cliente = getattr(usuario, 'cliente', None)  # Obtém o cliente associado ao usuário, se existir
+    
     if request.method == 'POST':
-        user_form = UsuarioUpdateForm(request.POST, instance=request.user)
+        user_form = UsuarioUpdateForm(instance=request.user, initial={
+                    'is_admin': request.user.is_superuser  # ou request.user.tipo_usuario == 'admin'
+                })
         password_form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+        cliente_form = ClienteForm(request.POST, instance=cliente) if cliente else None
 
-        if user_form.is_valid() and password_form.is_valid():
+        if user_form.is_valid() and cliente_form.is_valid():
             user_form.save()
-            password_form.save()
+            cliente_form.save()
+            
+            # Só tenta alterar a senha se os campos forem preenchidos
+            if (
+                password_form.cleaned_data.get('old_password') and
+                password_form.cleaned_data.get('new_password') and 
+                password_form.cleaned_data.get('confirm_password')
+            ):
+                if password_form.is_valid():
+                    password_form.save()
+                    update_session_auth_hash(request, password_form.user)  # Mantém o usuário logado após alteração de senha
+                else:
+                    messages.error(request, 'Erro ao alterar a senha.')
+                    return render(request, 'editar_perfil.html', {
+                        'user_form': user_form,
+                        'cliente_form': cliente_form,
+                        'password_form': password_form
+                    })
+
             update_session_auth_hash(request, request.user)  # Mantém o usuário logado após alteração de senha
             messages.success(request, "Perfil e senha atualizados com sucesso!")
             return redirect('perfil')
         else:
             messages.error(request, "Por favor, corrija os erros abaixo.")
     else:
-        user_form = UsuarioUpdateForm(instance=request.user)
+        user_form = UsuarioUpdateForm(instance=request.user, initial={
+                    'is_admin': request.user.is_superuser  # ou request.user.tipo_usuario == 'admin'
+                })
         password_form = CustomPasswordChangeForm(user=request.user)
+        cliente_form = ClienteForm(instance=cliente) if cliente else ClienteForm() 
 
     return render(request, 'App/editar_perfil.html', {
         'user_form': user_form,
-        'password_form': password_form
+        'cliente_form': cliente_form,
+        'password_form': password_form,
     })
 
 # Upload

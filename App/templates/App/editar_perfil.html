@@ -3,10 +3,10 @@
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white text-center">
-                    <h3>Editar Perfil & Alterar Senha</h3>
+                    <h3>Editar Perfil e Alterar Senha</h3>
                 </div>
                 <div class="card-body">
                     {% if messages %}
@@ -18,39 +18,59 @@
                     <form method="post">
                         {% csrf_token %}
 
-                        <h5 class="mb-3">Informações do Usuário</h5>
+                        <!-- Informações do Usuário -->
+                        <h5 class="mb-3 text-primary">Informações do Usuário</h5>
                         {% for field in user_form %}
-                        <div class="mb-3">
-                            <label class="form-label">{{ field.label }}</label>
-                            {{ field }}
-                            {% if field.errors %}
-                                <div class="text-danger">{{ field.errors }}</div>
-                            {% endif %}
-                        </div>
+                            <div class="mb-3">
+                                <label class="form-label">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.errors %}
+                                    <div class="text-danger small">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
                         {% endfor %}
 
-                        <hr>
+                        <!-- Informações do Cliente -->
+                        <h5 class="mb-3 text-primary">Informações do Cliente</h5>
+                        {% for field in cliente_form %}
+                            <div class="mb-3">
+                                <label class="form-label">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.errors %}
+                                    <div class="text-danger small">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
 
-                        <h5 class="mb-3">Alteração de Senha</h5>
+                        <!-- Alteração de Senha -->
+                        <h5 class="mb-3 text-primary">Alteração de Senha</h5>
                         {% for field in password_form %}
-                        <div class="mb-3">
-                            <label class="form-label">{{ field.label }}</label>
-                            {{ field }}
-                            {% if field.errors %}
-                                <div class="text-danger">{{ field.errors }}</div>
-                            {% endif %}
-                        </div>
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    {% if field.name == "old_password" %}
+                                        Senha Atual
+                                    {% elif field.name == "new_password1" %}
+                                        Nova Senha
+                                    {% elif field.name == "new_password2" %}
+                                        Confirmar Nova Senha
+                                    {% else %}
+                                        {{ field.label }}
+                                    {% endif %}
+                                </label>
+                                {{ field }}
+                                {% if field.errors %}
+                                    <div class="text-danger small">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
                         {% endfor %}
 
-                        <button type="submit" class="btn btn-success w-100 mt-3">
-                            <i class="fas fa-save"></i>Salvar
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Salvar
                         </button>
+                        <a href="{% url 'perfil' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </a>
                     </form>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="{% url 'perfil' %}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i>Voltar
-                    </a>
                 </div>
             </div>
         </div>
