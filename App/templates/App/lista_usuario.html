@@ -13,12 +13,14 @@
                         <a href="{% url 'detalhe_usuarios' usuario_id=usuario.pk %}" class="text-decoration-none">
                             {{ usuario.username }}
                         </a>
-                        {% if request.user.is_authenticated and request.user.is_superuser or request.user.pk == usuario.id %}
                             <div class="btn-group">
-                                <a href="{% url 'editar_usuario' usuario.id %}" class="btn btn-warning btn-sm">Editar</a>
-                                <a href="{% url 'deletar_usuario' usuario.id %}" class="btn btn-danger btn-sm">Deletar</a>
+                                {% if request.user.is_authenticated and request.user.is_superuser or request.user.pk == usuario.id %}
+                                    <a href="{% url 'editar_usuario' usuario.id %}" class="btn btn-warning btn-sm">Editar</a>
+                                {% endif %}
+                                {% if request.user.is_authenticated and request.user.is_superuser %}
+                                    <a href="{% url 'deletar_usuario' usuario.id %}" class="btn btn-danger btn-sm">Deletar</a>
+                                {% endif %}
                             </div>
-                        {% endif %}
                     </li>
                 {% endif %}
             {% endfor %}

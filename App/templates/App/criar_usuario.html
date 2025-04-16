@@ -7,6 +7,13 @@
 {% block content %}
 <div class="container mt-4">
     <h2 class="mb-4">Inserir Usuário</h2>
+    {% if messages %}
+        <div class="alert alert-success">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
     <form method="POST" class="needs-validation" novalidate>
         {% csrf_token %}
         {% if form.non_field_errors %}
