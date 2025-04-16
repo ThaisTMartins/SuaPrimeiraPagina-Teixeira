@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Produto, Usuario, Cliente, Avatar, Categoria, Interesse
 from django.http import HttpResponse
 from .forms import (ClienteForm, InteresseForm, ProdutoForm, PesquisaProdutoForm, RegistroUsuarioForm, UsuarioForm,
-                    CategoriaForm, AvatarForm, UsuarioUpdateForm, CustomPasswordChangeForm)
+                    CategoriaForm, AvatarForm, UsuarioUpdateForm, CustomPasswordChangeForm, AdminSetPasswordForm)
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, update_session_auth_hash
@@ -175,24 +175,6 @@ def editar_produto(request, produto_id):
     return render(request, 'App/editar_produto.html', {'form': form})
 
 @login_required
-def editar_usuario(request, usuario_id):
-    usuario = get_object_or_404(Usuario, id=usuario_id)
-    
-    if request.method == "POST":
-        form = UsuarioForm(request.POST, instance=usuario)
-        if form.is_valid():
-            # Se o usuário logado NÃO é admin, então mantém o tipo padrão (cliente)
-            if request.user.tipo_usuario != Usuario.TipoUsuario.admin:
-                usuario = form.save(commit=False)
-                usuario.tipo_usuario = Usuario.TipoUsuario.cliente  # Força tipo cliente
-            usuario.save()
-            return redirect('lista_usuario')
-    else:
-        form = UsuarioForm(instance=usuario)
-
-    return render(request, 'App/editar_usuario.html', {'form': form})
-
-@login_required
 def editar_categoria(request, categoria_id):
     categoria = get_object_or_404(Categoria, id=categoria_id)
 
@@ -241,55 +223,58 @@ def editar_interesse(request, usuario_id, cliente_id, interesse_id):
     return render(request, 'App/editar_interesse.html', {'form': form, 'usuario_id': usuario_id, 'cliente_id': cliente_id})
     
 @login_required
-def editar_perfil(request):
-    usuario = request.user  # Obtém o usuário logado
-    cliente = getattr(usuario, 'cliente', None)  # Obtém o cliente associado ao usuário, se existir
-    
+def editar_usuario(request, usuario_id):
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+    is_admin = request.user.is_superuser
+    is_self = usuario == request.user
+
+    print("POST:", request.POST)
     if request.method == 'POST':
-        user_form = UsuarioUpdateForm(instance=request.user, initial={
-                    'is_admin': request.user.is_superuser  # ou request.user.tipo_usuario == 'admin'
-                })
-        password_form = CustomPasswordChangeForm(user=request.user, data=request.POST)
-        cliente_form = ClienteForm(request.POST, instance=cliente) if cliente else None
-
-        if user_form.is_valid() and cliente_form.is_valid():
-            user_form.save()
-            cliente_form.save()
-            
-            # Só tenta alterar a senha se os campos forem preenchidos
-            if (
-                password_form.cleaned_data.get('old_password') and
-                password_form.cleaned_data.get('new_password') and 
-                password_form.cleaned_data.get('confirm_password')
-            ):
-                if password_form.is_valid():
-                    password_form.save()
-                    update_session_auth_hash(request, password_form.user)  # Mantém o usuário logado após alteração de senha
-                else:
-                    messages.error(request, 'Erro ao alterar a senha.')
-                    return render(request, 'editar_perfil.html', {
-                        'user_form': user_form,
-                        'cliente_form': cliente_form,
-                        'password_form': password_form
-                    })
-
-            update_session_auth_hash(request, request.user)  # Mantém o usuário logado após alteração de senha
-            messages.success(request, "Perfil e senha atualizados com sucesso!")
-            return redirect('perfil')
+        user_form = UsuarioUpdateForm(request.POST, instance=usuario, is_admin = is_admin)
+        
+        if is_admin and not is_self:
+            # Se o usuário for admin, pode alterar a senha de outro usuário
+            password_form = AdminSetPasswordForm(user=usuario, data=request.POST)
+        elif is_self:
+            # Se o usuário for ele mesmo, pode alterar a própria senha
+            password_form = PasswordChangeForm(user=usuario, data=request.POST)
         else:
+            return HttpResponseForbidden("Você não tem permissão para editar este usuário.")
+        
+        print("Password Form Errors:", password_form.errors)
+        if user_form.is_valid() and password_form.is_valid():
+            # Atualiza o usuário com os dados do formulário (nome de usuário)
+            print("User Form Errors:", user_form.errors)
+            user_form.save()
+            password_form.save()
+
+            if is_self:
+                update_session_auth_hash(request, password_form.user)  # Mantém o usuário logado após alteração de senha
+                print("Senha alterada com sucesso!")
+            
+            messages.success(request, "Usuário atualizado com sucesso!")
+            return redirect('home')            
+        else:
+            print("Form Errors:", user_form.errors, password_form.errors)
+            print("User Form:", user_form.is_valid())
+            print("Password Form:", password_form.is_valid())
             messages.error(request, "Por favor, corrija os erros abaixo.")
     else:
-        user_form = UsuarioUpdateForm(instance=request.user, initial={
-                    'is_admin': request.user.is_superuser  # ou request.user.tipo_usuario == 'admin'
-                })
-        password_form = CustomPasswordChangeForm(user=request.user)
-        cliente_form = ClienteForm(instance=cliente) if cliente else ClienteForm() 
+        user_form = UsuarioUpdateForm(instance=usuario, initial={'is_admin': is_admin})
+        
+        if is_admin and not is_self:
+            # Se o usuário for admin, pode alterar a senha de outro usuário
+            password_form = AdminSetPasswordForm(user=usuario, data=request.POST)
+        elif is_self:
+            # Se o usuário for ele mesmo, pode alterar a própria senha
+            password_form = PasswordChangeForm(user=usuario, data=request.POST)
+        else:
+            return HttpResponseForbidden("Você não tem permissão para editar este usuário.")
 
-    return render(request, 'App/editar_perfil.html', {
+    return render(request, 'App/editar_usuario.html', {
         'user_form': user_form,
-        'cliente_form': cliente_form,
         'password_form': password_form,
-    })
+    })  
 
 # Upload
 @login_required

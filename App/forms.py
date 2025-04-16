@@ -1,6 +1,6 @@
 from django import forms
 from .models import Cliente, Interesse, Produto, Usuario, Avatar, Categoria
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.core.exceptions import ValidationError
 
 class ClienteForm(forms.ModelForm):
@@ -104,6 +104,15 @@ class UsuarioUpdateForm(forms.ModelForm):
 
         if not is_admin:
             self.fields['tipo_usuario'].widget = forms.HiddenInput()
+    
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        usuario = Usuario.objects.filter(username=username)
+        if self.instance:
+            usuario = usuario.exclude(pk=self.instance.pk)
+        if usuario.exists():
+            raise ValidationError('Esse nome de usuário já existe.')
+        return username
 
 # Classe já é definida no Django, mas como não tem o label e o widget que eu quero, criei uma classe personalizada que sobrescreve a já existente
 class CustomPasswordChangeForm(PasswordChangeForm):
@@ -111,6 +120,23 @@ class CustomPasswordChangeForm(PasswordChangeForm):
         label="Senha Atual",
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
+    new_password1 = forms.CharField(
+        label="Nova Senha",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+    new_password2 = forms.CharField(
+        label="Confirme a Nova Senha",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+
+    def clean_old_password(self):
+        old_password = self.cleaned_data.get('old_password')
+        if not self.user.check_password(old_password):
+            raise ValidationError('Senha atual incorreta.')
+        return old_password
+
+# Para o admin, não tem o campo de senha atual, apenas os dois novos
+class AdminSetPasswordForm(SetPasswordForm):
     new_password1 = forms.CharField(
         label="Nova Senha",
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
