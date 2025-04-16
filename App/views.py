@@ -228,7 +228,6 @@ def editar_usuario(request, usuario_id):
     is_admin = request.user.is_superuser
     is_self = usuario == request.user
 
-    print("POST:", request.POST)
     if request.method == 'POST':
         user_form = UsuarioUpdateForm(request.POST, instance=usuario, is_admin = is_admin)
         
@@ -241,10 +240,8 @@ def editar_usuario(request, usuario_id):
         else:
             return HttpResponseForbidden("Você não tem permissão para editar este usuário.")
         
-        print("Password Form Errors:", password_form.errors)
         if user_form.is_valid() and password_form.is_valid():
             # Atualiza o usuário com os dados do formulário (nome de usuário)
-            print("User Form Errors:", user_form.errors)
             user_form.save()
             password_form.save()
 
@@ -255,9 +252,6 @@ def editar_usuario(request, usuario_id):
             messages.success(request, "Usuário atualizado com sucesso!")
             return redirect('home')            
         else:
-            print("Form Errors:", user_form.errors, password_form.errors)
-            print("User Form:", user_form.is_valid())
-            print("Password Form:", password_form.is_valid())
             messages.error(request, "Por favor, corrija os erros abaixo.")
     else:
         user_form = UsuarioUpdateForm(instance=usuario, initial={'is_admin': is_admin})
