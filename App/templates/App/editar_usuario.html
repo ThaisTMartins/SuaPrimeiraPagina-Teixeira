@@ -7,6 +7,13 @@
 {% block content %}
 <div class="container mt-4">
     <h2 class="mb-4">Editar Usuário</h2>
+    {% if messages %}
+        <div class="alert alert-success">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
     <form method="POST" class="needs-validation" novalidate>
         {% csrf_token %}
         {% for field in user_form %}
@@ -28,13 +35,16 @@
                         Senha Atual
                     {% elif field.name == "new_password1" %}
                         Nova Senha
+                        <small class="form-text text-muted">
+                            A senha deve ter pelo menos 8 caracteres, conter um número e uma letra maiúscula.
+                        </small>
                     {% elif field.name == "new_password2" %}
                         Confirmar Nova Senha
                     {% else %}
                         {{ field.label }}
                     {% endif %}
                 </label>
-                {{ field }}
+                {% render_field field class="form-control" %}
                 {% if field.errors %}
                     <div class="text-danger small">{{ field.errors }}</div>
                 {% endif %}
