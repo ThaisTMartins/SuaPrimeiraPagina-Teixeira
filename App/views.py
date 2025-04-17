@@ -9,6 +9,8 @@ from django.contrib.auth import login, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponseForbidden
 from django.utils import timezone
+from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
+from django.urls import reverse_lazy
 
 # Outras views
 def index(request):
@@ -96,20 +98,20 @@ def criar_interesse(request, usuario_id, cliente_id):
         form = InteresseForm()
     return render(request, 'App/criar_interesse.html', {'form': form, 'usuario': usuario, 'cliente': cliente})  # Garante um retorno sempre
 
-@login_required
-def criar_produto(request):
-    if request.method == 'POST':
-        form = ProdutoForm(request.POST)
-        if form.is_valid():
-            produto = form.save(commit=False)
-            produto.data_publicacao = timezone.now()  # Adiciona a data de publicação automaticamente
-            produto.data_modificao = timezone.now()
-            produto.autor_modificacao = request.user  # Associa o produto ao usuário logado no momento
-            form.save()
-            return redirect('lista_produtos_disponiveis')  # Redireciona para a lista de produtos disponíveis após salvar
-    else:
-        form = ProdutoForm()
-    return render(request, 'App/criar_produto.html', {'form': form})
+# @login_required
+# def criar_produto(request):
+#     if request.method == 'POST':
+#         form = ProdutoForm(request.POST)
+#         if form.is_valid():
+#             produto = form.save(commit=False)
+#             produto.data_publicacao = timezone.now()  # Adiciona a data de publicação automaticamente
+#             produto.data_modificao = timezone.now()
+#             produto.autor_modificacao = request.user  # Associa o produto ao usuário logado no momento
+#             form.save()
+#             return redirect('lista_produtos_disponiveis')  # Redireciona para a lista de produtos disponíveis após salvar
+#     else:
+#         form = ProdutoForm()
+#     return render(request, 'App/criar_produto.html', {'form': form})
 
 def criar_usuario(request):
     if request.method == 'POST':
@@ -286,15 +288,15 @@ def upload_avatar(request):
     return render(request, 'App/upload_avatar.html', {'form': form})
 
 # Deletar
-@login_required
-def deletar_produto(request, produto_id):
-    produto = get_object_or_404(Produto, id=produto_id)
+# @login_required
+# def deletar_produto(request, produto_id):
+#     produto = get_object_or_404(Produto, id=produto_id)
    
-    if request.method == "POST":
-        produto.delete()
-        return redirect('lista_produtos_disponiveis')
+#     if request.method == "POST":
+#         produto.delete()
+#         return redirect('lista_produtos_disponiveis')
 
-    return render(request, 'App/confirmar_deletar_produto.html', {'produto': produto})
+#     return render(request, 'App/confirmar_deletar_produto.html', {'produto': produto})
 
 @login_required
 def deletar_usuario(request, usuario_id):
@@ -328,3 +330,39 @@ def deletar_interesse(request, usuario_id, cliente_id, interesse_id):
         return redirect('detalhe_usuarios', usuario_id=usuario_id)
 
     return render(request, 'App/confirmar_deletar_interesse.html', {'interesse': interesse, 'usuario_id': usuario_id, 'cliente_id': cliente_id})
+
+# CVB
+class produto_list_view(ListView):
+    model = Produto
+    template_name = 'App/lista_produtos_disponiveis.html'
+    context_object_name = 'produtos'
+    
+class produto_detail_view(DetailView):
+    model = Produto
+    template_name = 'App/detalhe_produto.html'
+    context_object_name = 'produto'
+    pk_url_kwarg = 'produto_id'
+
+class produto_create_view(CreateView):
+    model = Produto
+    form_class = ProdutoForm
+    template_name = 'App/criar_produto.html'
+
+    def get_success_url(self):
+        return reverse_lazy('lista_produtos_disponiveis')
+    
+class produto_update_view(UpdateView):
+    model = Produto
+    form_class = ProdutoForm
+    template_name = 'App/editar_produto.html'
+    pk_url_kwarg = 'produto_id'
+
+    def get_success_url(self):
+        return reverse_lazy('lista_produtos_disponiveis')  
+
+class produto_delete_view(DeleteView):
+    model = Produto
+    template_name = 'App/confirmar_deletar_produto.html'
+    context_object_name = 'produto'
+    success_url = reverse_lazy('lista_produtos_disponiveis')
+    pk_url_kwarg = 'produto_id'
