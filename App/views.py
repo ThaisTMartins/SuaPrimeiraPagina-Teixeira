@@ -11,7 +11,9 @@ from django.http import HttpResponseForbidden
 from django.utils import timezone
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
+# FBV
 # Outras views
 def index(request):
     return HttpResponse("Olá, bem vindo ao APP!")
@@ -34,24 +36,6 @@ def detalhe_usuarios(request, usuario_id): #informações do cliente
     usuario = get_object_or_404(Usuario, pk=usuario_id)
     cliente = Cliente.objects.filter(usuario=usuario).first()  # Obtém o cliente associado ao usuário, se existir
     return render(request, 'App/detalhe_usuario.html', {'cliente': cliente, 'usuario': usuario})
-
-def detalhe_produto(request, produto_id):
-    produto = get_object_or_404(Produto, pk=produto_id)
-    return render(request, 'App/detalhe_produto.html', {'produto': produto})
-
-def lista_produtos_disponiveis(request):
-    form = PesquisaProdutoForm(request.GET)  # Cria o formulário de pesquisa
-    if form.is_valid():
-        termo = form.cleaned_data.get('termo')
-        if termo:
-            produtos_disponiveis = Produto.objects.filter(
-                produto__icontains=termo
-            )
-        else:
-            produtos_disponiveis = Produto.objects.all()
-    else:
-        produtos_disponiveis = Produto.objects.all()
-    return render (request, 'App/lista_produtos_disponiveis.html', {'produtos': produtos_disponiveis, 'form': form})
 
 @login_required
 def lista_categorias(request):
@@ -98,21 +82,6 @@ def criar_interesse(request, usuario_id, cliente_id):
         form = InteresseForm()
     return render(request, 'App/criar_interesse.html', {'form': form, 'usuario': usuario, 'cliente': cliente})  # Garante um retorno sempre
 
-# @login_required
-# def criar_produto(request):
-#     if request.method == 'POST':
-#         form = ProdutoForm(request.POST)
-#         if form.is_valid():
-#             produto = form.save(commit=False)
-#             produto.data_publicacao = timezone.now()  # Adiciona a data de publicação automaticamente
-#             produto.data_modificao = timezone.now()
-#             produto.autor_modificacao = request.user  # Associa o produto ao usuário logado no momento
-#             form.save()
-#             return redirect('lista_produtos_disponiveis')  # Redireciona para a lista de produtos disponíveis após salvar
-#     else:
-#         form = ProdutoForm()
-#     return render(request, 'App/criar_produto.html', {'form': form})
-
 def criar_usuario(request):
     if request.method == 'POST':
         form = RegistroUsuarioForm(request.POST)
@@ -158,24 +127,6 @@ def criar_categoria(request):
     return render(request, 'App/criar_categoria.html', {'form': form})  # Garante um retorno sempre
 
 # Editar
-@login_required
-def editar_produto(request, produto_id):
-    produto = get_object_or_404(Produto, id=produto_id)
-
-    if request.method == "POST":
-        form = ProdutoForm(request.POST, instance=produto)
-        if form.is_valid():
-            produto = form.save(commit=False)
-            produto.data_modificao = timezone.now()
-            produto.data_publicacao = produto.data_publicacao  # Mantém a data de publicação original
-            produto.autor_modificacao = request.user  # Associa o produto ao usuário logado no momento
-            produto.save()
-            return redirect('lista_produtos_disponiveis')
-    else:
-        form = ProdutoForm(instance=produto)
-
-    return render(request, 'App/editar_produto.html', {'form': form})
-
 @login_required
 def editar_categoria(request, categoria_id):
     categoria = get_object_or_404(Categoria, id=categoria_id)
@@ -288,16 +239,6 @@ def upload_avatar(request):
     return render(request, 'App/upload_avatar.html', {'form': form})
 
 # Deletar
-# @login_required
-# def deletar_produto(request, produto_id):
-#     produto = get_object_or_404(Produto, id=produto_id)
-   
-#     if request.method == "POST":
-#         produto.delete()
-#         return redirect('lista_produtos_disponiveis')
-
-#     return render(request, 'App/confirmar_deletar_produto.html', {'produto': produto})
-
 @login_required
 def deletar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, id=usuario_id)
@@ -336,14 +277,40 @@ class produto_list_view(ListView):
     model = Produto
     template_name = 'App/lista_produtos_disponiveis.html'
     context_object_name = 'produtos'
+    paginate_by = 9  # Se você quiser paginar os posts
+
+    # Solicitada conversão para o chatgpt
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = PesquisaProdutoForm(self.request.GET)  # Cria o formulário de pesquisa
+        
+        if self.form.is_valid():
+            termo = self.form.cleaned_data.get('termo')
+            categoria = self.form.cleaned_data.get('categoria')
+            status = self.form.cleaned_data.get('status')
+
+            if termo:
+                queryset = queryset.filter(produto__icontains=termo)
+            if categoria:
+                queryset = queryset.filter(nome_categoria=categoria)
+            if status:
+                queryset = queryset.filter(status=status)
+        
+        return queryset
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form
+        return context
+
 class produto_detail_view(DetailView):
     model = Produto
     template_name = 'App/detalhe_produto.html'
     context_object_name = 'produto'
     pk_url_kwarg = 'produto_id'
 
-class produto_create_view(CreateView):
+# LoginRequiredMixin é usado para garantir que o usuário esteja autenticado antes de acessar a view, substituindo o decorator @login_required
+class produto_create_view(LoginRequiredMixin, CreateView):
     model = Produto
     form_class = ProdutoForm
     template_name = 'App/criar_produto.html'
@@ -351,7 +318,15 @@ class produto_create_view(CreateView):
     def get_success_url(self):
         return reverse_lazy('lista_produtos_disponiveis')
     
-class produto_update_view(UpdateView):
+    def form_valid(self, form):
+        produto = form.save(commit=False)
+        produto.data_publicacao = timezone.now()
+        produto.data_modificao = timezone.now()
+        produto.autor_modificacao = self.request.user
+        produto.save()
+        return super().form_valid(form)
+    
+class produto_update_view(LoginRequiredMixin, UpdateView):
     model = Produto
     form_class = ProdutoForm
     template_name = 'App/editar_produto.html'
@@ -359,6 +334,14 @@ class produto_update_view(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('lista_produtos_disponiveis')  
+    
+    def form_valid(self, form):
+        produto = form.save(commit=False)
+        produto.data_modificao = timezone.now()
+        produto.data_publicacao = produto.data_publicacao # Mantém a data de publicação original
+        produto.autor_modificacao = self.request.user
+        produto.save()
+        return super().form_valid(form)
 
 class produto_delete_view(DeleteView):
     model = Produto

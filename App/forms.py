@@ -35,6 +35,18 @@ class PesquisaProdutoForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite o nome do produto'})
     )
 
+    categoria = forms.ModelChoiceField(
+        queryset=Categoria.objects.all(),
+        required=False,
+        label='Categoria',
+        empty_label="Todas as categorias"
+    )
+    status = forms.ChoiceField(
+        choices=[('', 'Todos os status')] + list(Produto.Status.choices),
+        required=False,
+        label='Status'
+    )
+
 class UsuarioForm(forms.ModelForm):
     class Meta:
         model = Usuario

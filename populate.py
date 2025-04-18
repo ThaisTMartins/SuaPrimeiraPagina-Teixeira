@@ -61,42 +61,64 @@ def popular_banco():
         telefone=11933334444
     )
 
-    # Categorias
-    categoria_notebook = Categoria.objects.create(categoria="Notebook")
-    categoria_tv = Categoria.objects.create(categoria="TV")
-    categoria_fone = Categoria.objects.create(categoria="Fone de Ouvido")
-
-    # Produtos
-    Produto.objects.create(
-        produto="Notebook Dell",
-        descricao="Notebook com alto desempenho.",
-        ano_fabricacao=2022,
-        nome_categoria=categoria_notebook,
-        preco=4200.00,
-        quantidade=5
-    )
-    Produto.objects.create(
-        produto="Smart TV 50\"",
-        descricao="TV com resolução 4K e apps integrados.",
-        ano_fabricacao=2023,
-        nome_categoria=categoria_tv,
-        preco=3000.00,
-        quantidade=3
-    )
-    Produto.objects.create(
-        produto="Fone Bluetooth JBL",
-        descricao="Fone sem fio com cancelamento de ruído.",
-        ano_fabricacao=2021,
-        nome_categoria=categoria_fone,
-        preco=399.90,
-        quantidade=10
-    )
-
     # Interesses
     Interesse.objects.create(cliente=cliente1, interesse="Notebook")
     Interesse.objects.create(cliente=cliente1, interesse="Smart TV")
     Interesse.objects.create(cliente=cliente2, interesse="Fone de Ouvido")
     Interesse.objects.create(cliente=cliente2, interesse="Tablet")
+
+    from datetime import datetime
+from random import choice, randint
+from decimal import Decimal
+from App.models import Usuario, Cliente, Produto, Interesse, Categoria
+
+def popular_banco():
+    # Criar usuários e clientes (como no seu código atual)...
+    # ...
+
+    categorias = [
+        Categoria.objects.create(categoria="Notebook"),
+        Categoria.objects.create(categoria="TV"),
+        Categoria.objects.create(categoria="Fone de Ouvido"),
+        Categoria.objects.create(categoria="Tablet"),
+        Categoria.objects.create(categoria="Monitor"),
+    ]
+
+    nomes_produtos = [
+        ("Notebook Dell", "Notebook com alto desempenho."),
+        ("Smart TV 50\"", "TV com resolução 4K."),
+        ("Fone JBL", "Fone com cancelamento de ruído."),
+        ("Tablet Samsung", "Tablet Android com boa bateria."),
+        ("Monitor LG", "Monitor ultrawide."),
+        ("Notebook Acer", "Notebook com bom custo-benefício."),
+        ("TV LG 43\"", "TV Full HD com SmartOS."),
+        ("Fone Sony", "Fone Bluetooth com microfone."),
+        ("Tablet Lenovo", "Tablet ideal para estudo."),
+        ("Monitor Samsung", "Monitor 24\" Full HD."),
+        ("Notebook Apple", "MacBook Air M2."),
+        ("Smart TV Samsung 60\"", "TV 4K HDR."),
+        ("Fone Xiaomi", "Fone de ouvido leve e confortável."),
+        ("Notebook Positivo", "Modelo básico para tarefas simples."),
+        ("Monitor Dell", "Monitor com excelente contraste."),
+        ("Tablet Amazon Fire", "Ideal para leitura."),
+        ("Fone Philips", "Modelo com fio."),
+        ("Notebook HP", "Com tela antirreflexo."),
+        ("TV Philco", "Smart TV custo-benefício."),
+        ("Tablet Multilaser", "Modelo infantil.")
+    ]
+
+    for nome, desc in nomes_produtos:
+        categoria = choice(categorias)
+        Produto.objects.create(
+            produto=nome,
+            descricao=desc,
+            ano_fabricacao=randint(2018, 2023),
+            nome_categoria=categoria,
+            preco=Decimal(randint(500, 6000)),
+            quantidade=randint(1, 10),
+            status=choice(['D', 'V', 'R']),
+            autor_modificacao=Usuario.objects.filter(is_superuser=True).first()
+        )
 
     print("Banco de dados populado com sucesso!")
 

@@ -1,8 +1,8 @@
 from django.urls import path, include
-from .views import (lista_usuarios, lista_produtos_disponiveis, lista_categorias, detalhe_usuarios, detalhe_produto,
-                    criar_clientes, criar_interesse, criar_produto, criar_usuario, criar_categoria,
-                    upload_avatar, sobre, perfil, editar_produto, editar_categoria, editar_interesse, editar_cliente, editar_usuario,
-                    deletar_categoria, deletar_produto, deletar_interesse, deletar_usuario)
+from .views import (lista_usuarios, lista_categorias, detalhe_usuarios,
+                    criar_clientes, criar_interesse, criar_usuario, criar_categoria,
+                    upload_avatar, sobre, perfil, editar_categoria, editar_interesse, editar_cliente, editar_usuario,
+                    deletar_categoria, deletar_interesse, deletar_usuario)
 from .views import produto_list_view, produto_create_view, produto_update_view, produto_delete_view, produto_detail_view
 from django.contrib.auth import views as auth_views  
 
