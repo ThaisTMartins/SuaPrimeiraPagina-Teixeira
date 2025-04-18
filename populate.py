@@ -1,6 +1,8 @@
-# Esse arquivo irá popular o banco de dados com dados simulados para que seja mais fácil verificar o funcionamento da aplicação
 import os
 import django
+from datetime import datetime
+from random import choice, randint
+from decimal import Decimal
 
 # Configura o ambiente Django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SuaPrimeiraPagina.settings')
@@ -9,6 +11,12 @@ django.setup()
 from App.models import Usuario, Cliente, Produto, Interesse, Categoria
 
 def popular_banco():
+    Produto.objects.all().delete()
+    Interesse.objects.all().delete()
+    Cliente.objects.all().delete()
+    Usuario.objects.all().delete()
+    Categoria.objects.all().delete()
+    
     # Usuário administrador padrão do sistema
     admin_padrao = Usuario.objects.create_user(
         password='admin',
@@ -17,7 +25,6 @@ def popular_banco():
         is_superuser=True,
         is_staff=True
     )
-    admin_padrao.save()
 
     # Usuário administrador (Gabriel)
     admin_gabriel = Usuario.objects.create_user(
@@ -27,7 +34,6 @@ def popular_banco():
         is_superuser=True,
         is_staff=True
     )
-    admin_gabriel.save()
 
     # Usuários clientes
     user1 = Usuario.objects.create_user(
@@ -44,7 +50,7 @@ def popular_banco():
     # Clientes relacionados
     cliente1 = Cliente.objects.create(
         usuario=user1,
-        nome ='Joana',
+        nome='Joana',
         sobrenome='Souza',
         cpf='22222222222',
         email='joana@email.com',
@@ -53,7 +59,7 @@ def popular_banco():
     )
     cliente2 = Cliente.objects.create(
         usuario=user2,
-        nome = 'Carlos',
+        nome='Carlos',
         sobrenome='Ferreira',
         cpf='33333333333',
         email='carlos@email.com',
@@ -67,6 +73,7 @@ def popular_banco():
     Interesse.objects.create(cliente=cliente2, interesse="Fone de Ouvido")
     Interesse.objects.create(cliente=cliente2, interesse="Tablet")
 
+    # Categorias
     categorias = [
         Categoria.objects.create(categoria="Notebook"),
         Categoria.objects.create(categoria="TV"),
@@ -75,6 +82,7 @@ def popular_banco():
         Categoria.objects.create(categoria="Monitor"),
     ]
 
+    # Produtos
     nomes_produtos = [
         ("Notebook Dell", "Notebook com alto desempenho."),
         ("Smart TV 50\"", "TV com resolução 4K."),
@@ -115,4 +123,3 @@ def popular_banco():
 
 if __name__ == '__main__':
     popular_banco()
-    # Para executar este script, use o seguinte comando no terminal: python populate.py
