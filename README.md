@@ -7,13 +7,16 @@
 `python manage.py makemigrations`
 `python manage.py migrate`
 
-## Criar o usuário admin
-`python manage.py createsuperuser`
-Adicione o nome de usuário e senha que serão utilizados para acessar a área de administrador do sistema.
-
 ## Popular o banco de dados
 Um arquivo foi criado com alguns cadastros, para possibilitar uma visualização mais rápida do funcionamento da aplicação. Se deseja inserir todos os dados manualmente, não execute o comando abaixo:
 `python populate.py`
+
+## Criar o usuário admin
+`python manage.py createsuperuser`
+Adicione o nome de usuário e senha que serão utilizados para acessar a área de administrador do sistema. Caso deseje adicionar manualmente, além dois itens que foram incluídos no arquivo populate.py.
+
+## Adicionar as dependências
+`pip install -r requirements.txt`
 
 ## Executar o servidor
 `python manage.py runserver`
@@ -24,26 +27,22 @@ A aplicação simula um site com informações cadastrais de cliente. Para isso,
 
 ## Tabelas do Banco
 
-| Usuario      |
-|--------------|
-| **id**       |
-| nome         |
-| senha        |
+## Modelos de Banco de Dados
 
-| Cliente           |
-|-------------------|
-| id                |
-| **id_usuario**    |
-| cpf               |
-| telefone          |
-| email             |
-| ano_nascimento    |
+| **Usuario** | **Cliente** | **Categoria** | **Produto** | **Interesse** | **Avatar** |
+|-------------|-------------|---------------|-------------|---------------|------------|
+| **id**      | **id**      | **id**        | **id**      | **id**        | **id**     |
+| username    | nome        | categoria     | produto     | cliente       | Usuario    |
+| password    | sobrenome   |               | descricao   | interesse     | imagem     |
+| tipo_usuario| cpf         |               | ano_fabricacao|              |            |
+|             | email       |               | nome_categoria|              |            |
+|             | data_nascimento|           | data_publicacao|             |            |
+|             | telefone    |               | preco       |               |            |
+|             | usuario     |               | status      |               |            |
+|             |             |               | quantidade  |               |            |
+|             |             |               | data_modificao|             |            |
+|             |             |               | autor_modificacao|          |            |
 
-| Interesses        |
-|-------------------|
-| id                |
-| **id_cliente**    |
-| interesse         |
 
 Além dessas tabelas, existe uma chamada Produto, que indica os produtos disponíveis na plataforma:
 
