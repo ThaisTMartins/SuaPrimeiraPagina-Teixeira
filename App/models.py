@@ -37,7 +37,7 @@ class Produto(models.Model):
     preco = models.DecimalField(max_digits=10, decimal_places=2) # Preço do produto, com 10 dígitos no total e 2 depois da vírgula
     status = models.CharField(max_length=1, choices=Status.choices, default=Status.disponivel)
     quantidade = models.IntegerField(default=1) # Quantidade do produto, padrão 1
-    data_modificao = models.DateTimeField(auto_now=True) # Adiciona a data de modificação automaticamente
+    data_modificacao = models.DateTimeField(auto_now=True) # Adiciona a data de modificação automaticamente
     autor_modificacao = models.ForeignKey(Usuario, on_delete=models.CASCADE, null=True, blank=True)
 
 class Interesse(models.Model):

@@ -321,7 +321,7 @@ class produto_create_view(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         produto = form.save(commit=False)
         produto.data_publicacao = timezone.now()
-        produto.data_modificao = timezone.now()
+        produto.data_modificacao = timezone.now()
         produto.autor_modificacao = self.request.user
         produto.save()
         return super().form_valid(form)
@@ -337,7 +337,7 @@ class produto_update_view(LoginRequiredMixin, UpdateView):
     
     def form_valid(self, form):
         produto = form.save(commit=False)
-        produto.data_modificao = timezone.now()
+        produto.data_modificacao = timezone.now()
         produto.data_publicacao = produto.data_publicacao # Mantém a data de publicação original
         produto.autor_modificacao = self.request.user
         produto.save()

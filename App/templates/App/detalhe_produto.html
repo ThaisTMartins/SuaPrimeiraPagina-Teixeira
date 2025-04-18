@@ -22,11 +22,11 @@
                 </span>
             </p>
             <p class="card-text"><strong>Categoria:</strong> {{ produto.nome_categoria }}</p>
-            <p class="card-text"><strong>Data Cadastro:</strong> {{ produto.data_cadastro }}</p>
+            <p class="card-text"><strong>Data Cadastro:</strong> {{ produto.data_publicacao }}</p>
 
             {% if request.user.is_superuser %}
-                <p class="card-text"><strong>Data Atualização:</strong> {{ produto.data_atualizacao }}</p>
-                <p class="card-text"><strong>Usuário:</strong> {{ produto.usuario.username }}</p>
+                <p class="card-text"><strong>Data Atualização:</strong> {{ produto.data_modificacao }}</p>
+                <p class="card-text"><strong>Usuário:</strong> {{ produto.autor_modificacao }}</p>
             {% endif %}
 
             <!-- Botões alinhados -->
