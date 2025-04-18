@@ -226,13 +226,13 @@ def editar_usuario(request, usuario_id):
 # Upload
 @login_required
 def upload_avatar(request):
-    avatar, created = Avatar.objects.get_or_create(user=request.user)  # Tenta obter ou cria um novo avatar
+    avatar, created = Avatar.objects.get_or_create(Usuario=request.user)  # Tenta obter ou cria um novo avatar
 
     if request.method == 'POST':
         form = AvatarForm(request.POST, request.FILES, instance=avatar)
         if form.is_valid():
             form.save()
-            return redirect('perfil')  # Redireciona para o perfil
+            return redirect('lista_usuarios')  # Redireciona para a lista de usuários após salvar o avatar
     else:
         form = AvatarForm(instance=avatar)
 

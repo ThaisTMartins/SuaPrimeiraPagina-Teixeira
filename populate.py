@@ -67,15 +67,6 @@ def popular_banco():
     Interesse.objects.create(cliente=cliente2, interesse="Fone de Ouvido")
     Interesse.objects.create(cliente=cliente2, interesse="Tablet")
 
-    from datetime import datetime
-from random import choice, randint
-from decimal import Decimal
-from App.models import Usuario, Cliente, Produto, Interesse, Categoria
-
-def popular_banco():
-    # Criar usuários e clientes (como no seu código atual)...
-    # ...
-
     categorias = [
         Categoria.objects.create(categoria="Notebook"),
         Categoria.objects.create(categoria="TV"),

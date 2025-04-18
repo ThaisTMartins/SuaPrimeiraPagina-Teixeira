@@ -12,7 +12,6 @@
                     <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                         {% csrf_token %}
 
-
                         {% for field in form %}
                         <div class="mb-3">
                             <label class="form-label">{{ field.label }}</label>
@@ -23,6 +22,9 @@
                         </div>
                         {% endfor %}
 
+                        {% if form.instance.imagem %}
+                            <img src="{{ form.instance.imagem.url }}" class="img-thumbnail mb-3" style="max-width: 200px;">
+                        {% endif %}
 
                         <button type="submit" class="btn btn-success w-100">
                             <i class="fas fa-upload"></i> Upload
@@ -30,12 +32,13 @@
                     </form>
                 </div>
                 <div class="card-footer text-center">
-                    <a href="{% url 'perfil' %}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Voltar ao Perfil
+                    <a href="{% url 'lista_usuarios' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Voltar
                     </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}

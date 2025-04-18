@@ -15,7 +15,10 @@
                         </a>
                             <div class="btn-group">
                                 {% if request.user.is_authenticated and request.user.is_superuser or request.user.pk == usuario.id %}
-                                    <a href="{% url 'editar_usuario' usuario.id %}" class="btn btn-warning btn-sm">Editar</a>
+                                    <a href="{% url 'editar_avatar' %}" class="btn btn-secondary">
+                                        <i class="fas fa-image"></i> Alterar Avatar
+                                    </a>
+                                    <a href="{% url 'editar_usuario' usuario.id %}" class="btn btn-warning btn-sm">Editar Dados</a>
                                 {% endif %}
                                 {% if request.user.is_authenticated and request.user.is_superuser %}
                                     <a href="{% url 'deletar_usuario' usuario.id %}" class="btn btn-danger btn-sm">Deletar</a>
